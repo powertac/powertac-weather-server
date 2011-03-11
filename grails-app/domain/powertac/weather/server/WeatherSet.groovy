@@ -10,8 +10,5 @@ class WeatherSet {
 	WeatherReport set = []
 	
     static constraints = {
-    }
-	
-	
-	
+    }	
 }
