@@ -22,4 +22,11 @@
 		<nature>org.eclipse.jdt.core.javanature</nature>
 		<nature>org.eclipse.wst.common.project.facet.core.nature</nature>
 	</natures>
+	<linkedResources>
+		<link>
+			<name>tomcat-1.3.6-src-groovy</name>
+			<type>2</type>
+			<locationURI>GRAILS_ROOT/1.3.7/projects/powertac-weather-server/plugins/tomcat-1.3.6/src/groovy</locationURI>
+		</link>
+	</linkedResources>
 </projectDescription>
