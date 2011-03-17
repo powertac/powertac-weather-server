@@ -14,7 +14,7 @@ public class DatabaseSetup {
 	
 	public void connect(){
 		if(registered){
-			def sql = Sql.newInstance("jdbc:mysql://"+ serverName +"/"+dbName,
+			sql = Sql.newInstance("jdbc:mysql://"+ serverName +"/"+dbName,
 			username, password, "com.mysql.jdbc.Driver")
 		}
 	}

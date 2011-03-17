@@ -1,8 +1,16 @@
+// dataSource {
+//       configClass = GrailsAnnotationConfiguration.class
+//   	   pooled = false
+//  	   driverClassName = "com.mysql.jdbc.Driver"
+//   	   username = "root"
+//   	   password =  "MKld597F"
+//   	   dialect = "org.hibernate.dialect.MySQL5InnoDBDialect"
+//   }
 dataSource {
-    pooled = true
-    driverClassName = "org.hsqldb.jdbcDriver"
-    username = "sa"
-    password = ""
+	pooled = true
+	driverClassName = "org.hsqldb.jdbcDriver"
+	username = "sa"
+	password = ""
 }
 hibernate {
     cache.use_second_level_cache = true
@@ -14,7 +22,8 @@ environments {
     development {
         dataSource {
             dbCreate = "create-drop" // one of 'create', 'create-drop','update'
-            url = "jdbc:hsqldb:mem:devDB"
+            //url = "jdbc:mysql://localhost:3306/test"
+			url = "jdbc:hsqldb:mem:devDB"
         }
     }
     test {

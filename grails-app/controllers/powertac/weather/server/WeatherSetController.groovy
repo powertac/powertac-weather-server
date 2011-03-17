@@ -1,5 +1,7 @@
 package powertac.weather.server
 
+import groovy.sql.Sql
+
 class WeatherSetController {
 
     static allowedMethods = [save: "POST", update: "POST", delete: "POST"]
@@ -9,7 +11,9 @@ class WeatherSetController {
     }
 	
 	def weatherRequest = {
-		render params.toMapString()
+		
+		Sql sql = Sql.newInstance("jdbc:mysql://localhost:3306/test","root", "MKld597F", "com.mysql.jdbc.Driver")
+		render sql.rows("Select * from users").toString();
 	}
 
     def list = {
