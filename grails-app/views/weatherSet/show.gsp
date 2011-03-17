@@ -30,23 +30,22 @@
                         </tr>
                     
                         <tr class="prop">
-                            <td valign="top" class="name"><g:message code="weatherSet.currentDay.label" default="Current Day" /></td>
-                            
-                            <td valign="top" class="value">${fieldValue(bean: weatherSetInstance, field: "currentDay")}</td>
-                            
-                        </tr>
-                    
-                        <tr class="prop">
-                            <td valign="top" class="name"><g:message code="weatherSet.currentTime.label" default="Current Time" /></td>
-                            
-                            <td valign="top" class="value">${fieldValue(bean: weatherSetInstance, field: "currentTime")}</td>
-                            
-                        </tr>
-                    
-                        <tr class="prop">
                             <td valign="top" class="name"><g:message code="weatherSet.fetched.label" default="Fetched" /></td>
                             
                             <td valign="top" class="value"><g:formatBoolean boolean="${weatherSetInstance?.fetched}" /></td>
+                            
+                        </tr>
+                    
+                        <tr class="prop">
+                            <td valign="top" class="name"><g:message code="weatherSet.games.label" default="Games" /></td>
+                            
+                            <td valign="top" style="text-align: left;" class="value">
+                                <ul>
+                                <g:each in="${weatherSetInstance.games}" var="g">
+                                    <li><g:link controller="gameModel" action="show" id="${g.id}">${g?.encodeAsHTML()}</g:link></li>
+                                </g:each>
+                                </ul>
+                            </td>
                             
                         </tr>
                     
@@ -58,9 +57,15 @@
                         </tr>
                     
                         <tr class="prop">
-                            <td valign="top" class="name"><g:message code="weatherSet.set.label" default="Set" /></td>
+                            <td valign="top" class="name"><g:message code="weatherSet.reports.label" default="Reports" /></td>
                             
-                            <td valign="top" class="value"><g:link controller="weatherReport" action="show" id="${weatherSetInstance?.set?.id}">${weatherSetInstance?.set?.encodeAsHTML()}</g:link></td>
+                            <td valign="top" style="text-align: left;" class="value">
+                                <ul>
+                                <g:each in="${weatherSetInstance.reports}" var="r">
+                                    <li><g:link controller="weatherReport" action="show" id="${r.id}">${r?.encodeAsHTML()}</g:link></li>
+                                </g:each>
+                                </ul>
+                            </td>
                             
                         </tr>
                     

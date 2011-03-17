@@ -4,22 +4,22 @@ package powertac.weather.server
 import groovy.sql.Sql
 
 public class DatabaseSetup {
-	private Sql sql
-	private String serverName
-	private String dbName
-	private String username
-	private String password
+	Sql sql
+	String serverName
+	String dbName
+	String username
+	String password	
+	boolean registered = false
 	
-	private boolean registered = false
-	
-	public void connect(){
+	def connect() {
 		if(registered){
+			//Sql sql = Sql.newInstance("jdbc:mysql://localhost:3306/test","root", "MKld597F", "com.mysql.jdbc.Driver")
 			sql = Sql.newInstance("jdbc:mysql://"+ serverName +"/"+dbName,
 			username, password, "com.mysql.jdbc.Driver")
 		}
 	}
 	
-	public void register(String server, String port, String db, String username, String password){
+	def register(String server, String port, String db, String username, String password){
 		registered = true
 		serverName = server+":"+port
 		dbName = db
@@ -27,11 +27,17 @@ public class DatabaseSetup {
 		this.password = password	
 	}	
 	
-	public List executeQuery(String q){
+	/*
+	 * Execute selection queries
+	 */
+	def executeQuery(String q){
 		return sql.rows(q)
 	}
 	
-	public boolean executeNonQuery(String q){
+	/*
+	 * Execute and update queries
+	 */
+	def executeNonQuery(String q){
 		return false
 	}
 }

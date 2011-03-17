@@ -12,8 +12,24 @@ class WeatherSetController {
 	
 	def weatherRequest = {
 		
-		Sql sql = Sql.newInstance("jdbc:mysql://localhost:3306/test","root", "MKld597F", "com.mysql.jdbc.Driver")
-		render sql.rows("Select * from users").toString();
+		//Sql sql = Sql.newInstance("jdbc:mysql://localhost:3306/test","root", "MKld597F", "com.mysql.jdbc.Driver")
+		//DatabaseSetup ds = new DatabaseSetup()
+		//ds.register("localhost", "3306", "test", "root", "MKld597F")
+		//ds.connect()
+		
+		if(WeatherSet.findById(params.get("id")) != null){
+			WeatherSet.findById(params.get("id")).genReports();
+			WeatherSet tmp = WeatherSet.findById(params.get("id"))
+			//WeatherSet.findById(params.get("id")).reports.each ({ item -> tmpString += "${item.toString()}-"})
+			render "Report Exists : \n" + tmp.reportString
+			
+			
+		}else{
+			render "Error Set Doesnt Exist!"
+		}
+		
+		
+		//render ds.executeQuery("Select * from users").toString();
 	}
 
     def list = {

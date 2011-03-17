@@ -30,24 +30,6 @@
                         
                             <tr class="prop">
                                 <td valign="top" class="name">
-                                    <label for="currentDay"><g:message code="weatherSet.currentDay.label" default="Current Day" /></label>
-                                </td>
-                                <td valign="top" class="value ${hasErrors(bean: weatherSetInstance, field: 'currentDay', 'errors')}">
-                                    <g:textField name="currentDay" value="${fieldValue(bean: weatherSetInstance, field: 'currentDay')}" />
-                                </td>
-                            </tr>
-                        
-                            <tr class="prop">
-                                <td valign="top" class="name">
-                                    <label for="currentTime"><g:message code="weatherSet.currentTime.label" default="Current Time" /></label>
-                                </td>
-                                <td valign="top" class="value ${hasErrors(bean: weatherSetInstance, field: 'currentTime', 'errors')}">
-                                    <g:textField name="currentTime" value="${fieldValue(bean: weatherSetInstance, field: 'currentTime')}" />
-                                </td>
-                            </tr>
-                        
-                            <tr class="prop">
-                                <td valign="top" class="name">
                                     <label for="fetched"><g:message code="weatherSet.fetched.label" default="Fetched" /></label>
                                 </td>
                                 <td valign="top" class="value ${hasErrors(bean: weatherSetInstance, field: 'fetched', 'errors')}">
@@ -61,15 +43,6 @@
                                 </td>
                                 <td valign="top" class="value ${hasErrors(bean: weatherSetInstance, field: 'numberDays', 'errors')}">
                                     <g:textField name="numberDays" value="${fieldValue(bean: weatherSetInstance, field: 'numberDays')}" />
-                                </td>
-                            </tr>
-                        
-                            <tr class="prop">
-                                <td valign="top" class="name">
-                                    <label for="set"><g:message code="weatherSet.set.label" default="Set" /></label>
-                                </td>
-                                <td valign="top" class="value ${hasErrors(bean: weatherSetInstance, field: 'set', 'errors')}">
-                                    <g:select name="set.id" from="${powertac.weather.server.WeatherReport.list()}" optionKey="id" value="${weatherSetInstance?.set?.id}"  />
                                 </td>
                             </tr>
                         

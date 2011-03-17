@@ -24,15 +24,11 @@
                         
                             <g:sortableColumn property="id" title="${message(code: 'weatherSet.id.label', default: 'Id')}" />
                         
-                            <g:sortableColumn property="currentDay" title="${message(code: 'weatherSet.currentDay.label', default: 'Current Day')}" />
-                        
-                            <g:sortableColumn property="currentTime" title="${message(code: 'weatherSet.currentTime.label', default: 'Current Time')}" />
-                        
                             <g:sortableColumn property="fetched" title="${message(code: 'weatherSet.fetched.label', default: 'Fetched')}" />
                         
                             <g:sortableColumn property="numberDays" title="${message(code: 'weatherSet.numberDays.label', default: 'Number Days')}" />
                         
-                            <th><g:message code="weatherSet.set.label" default="Set" /></th>
+                            <g:sortableColumn property="startDate" title="${message(code: 'weatherSet.startDate.label', default: 'Start Date')}" />
                         
                         </tr>
                     </thead>
@@ -42,15 +38,11 @@
                         
                             <td><g:link action="show" id="${weatherSetInstance.id}">${fieldValue(bean: weatherSetInstance, field: "id")}</g:link></td>
                         
-                            <td>${fieldValue(bean: weatherSetInstance, field: "currentDay")}</td>
-                        
-                            <td>${fieldValue(bean: weatherSetInstance, field: "currentTime")}</td>
-                        
                             <td><g:formatBoolean boolean="${weatherSetInstance.fetched}" /></td>
                         
                             <td>${fieldValue(bean: weatherSetInstance, field: "numberDays")}</td>
                         
-                            <td>${fieldValue(bean: weatherSetInstance, field: "set")}</td>
+                            <td><g:formatDate date="${weatherSetInstance.startDate}" /></td>
                         
                         </tr>
                     </g:each>
