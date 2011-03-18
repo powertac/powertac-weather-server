@@ -22,7 +22,7 @@ class WeatherReport {
 	float windSpeed = 0
 	WindDirection windDir = WindDirection.WEST
 	
-	def WeatherReport(int time, float temp, float cloudCover) {
+	WeatherReport(int time, float temp, float cloudCover) {
 		this.time = time
 		this.temp = temp
 		this.cloudCover = cloudCover

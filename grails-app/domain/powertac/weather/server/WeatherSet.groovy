@@ -7,10 +7,16 @@ class WeatherSet {
 	boolean fetched
 	String reportString = ""
 	
+	//static transients = {"fetched"}
+	
     static constraints = {
     }
 	
 	static hasMany = [reports:WeatherReport,games:GameModel]
+	
+	WeatherSet() {
+		
+	}
 	
 	/*
 	 * Returns the applicable weatherReport for the active GameModel ID.
@@ -36,9 +42,10 @@ class WeatherSet {
 		
 	}
 	
+		
 	/*
 	 * Generates the initial weather reports for the database.
-	 * This should only need to be called once.
+	 * This should only need to be called once per weatherSet.
 	 */
 	def genReports() {
 		if(!fetched){
@@ -48,14 +55,16 @@ class WeatherSet {
 			
 			List result = ds.executeQuery("select * from weatherData")
 			
-			result.each ({ item -> 
-				//def temp = item.get("temp")
-				//def day = item.get("day")
-				//reports = reports + [new WeatherReport(day,temp,0.0)]
+			result.each ({ item -> reportString += "${item}"})
+			
+			result.each ({ item -> reports += new WeatherReport(item.get("day"),item.get("temp"),0.0f)})
+				//	def temp = item.get("temp")
+			//	def day = item.get("day")
+			//	reports += new WeatherReport(day,temp,0.0)
+				//reportString += "${item}-"
 				
-				reportString+= "${item}-" })
 			
-			
+			//	 })
 			
 			// Retrieve info from database and create WeatherReports
 			fetched = true;
