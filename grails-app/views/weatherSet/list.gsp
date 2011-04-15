@@ -24,11 +24,15 @@
                         
                             <g:sortableColumn property="id" title="${message(code: 'weatherSet.id.label', default: 'Id')}" />
                         
-                            <g:sortableColumn property="fetched" title="${message(code: 'weatherSet.fetched.label', default: 'Fetched')}" />
+                            <g:sortableColumn property="cloudCoverColumnName" title="${message(code: 'weatherSet.cloudCoverColumnName.label', default: 'Cloud Cover Column Name')}" />
                         
-                            <g:sortableColumn property="numberDays" title="${message(code: 'weatherSet.numberDays.label', default: 'Number Days')}" />
+                            <g:sortableColumn property="dbHost" title="${message(code: 'weatherSet.dbHost.label', default: 'Db Host')}" />
                         
-                            <g:sortableColumn property="startDate" title="${message(code: 'weatherSet.startDate.label', default: 'Start Date')}" />
+                            <g:sortableColumn property="dbName" title="${message(code: 'weatherSet.dbName.label', default: 'Db Name')}" />
+                        
+                            <g:sortableColumn property="dbPass" title="${message(code: 'weatherSet.dbPass.label', default: 'Db Pass')}" />
+                        
+                            <g:sortableColumn property="dbtableName" title="${message(code: 'weatherSet.dbtableName.label', default: 'Dbtable Name')}" />
                         
                         </tr>
                     </thead>
@@ -38,11 +42,15 @@
                         
                             <td><g:link action="show" id="${weatherSetInstance.id}">${fieldValue(bean: weatherSetInstance, field: "id")}</g:link></td>
                         
-                            <td><g:formatBoolean boolean="${weatherSetInstance.fetched}" /></td>
+                            <td>${fieldValue(bean: weatherSetInstance, field: "cloudCoverColumnName")}</td>
                         
-                            <td>${fieldValue(bean: weatherSetInstance, field: "numberDays")}</td>
+                            <td>${fieldValue(bean: weatherSetInstance, field: "dbHost")}</td>
                         
-                            <td><g:formatDate date="${weatherSetInstance.startDate}" /></td>
+                            <td>${fieldValue(bean: weatherSetInstance, field: "dbName")}</td>
+                        
+                            <td>${fieldValue(bean: weatherSetInstance, field: "dbPass")}</td>
+                        
+                            <td>${fieldValue(bean: weatherSetInstance, field: "dbtableName")}</td>
                         
                         </tr>
                     </g:each>

@@ -9,7 +9,13 @@ class WeatherSet {
 	String windDirColumnName
 	String windSpeedColumnName
 	String cloudCoverColumnName
+	String idColumnName
 	
+	String dbName
+	String dbHost
+	String dbPass
+	String dbtableName
+		
 	String reportString = ""
 	
 	//static transients = {"fetched"}
@@ -52,25 +58,19 @@ class WeatherSet {
 	 * Generates the initial weather reports for the database.
 	 * This should only need to be called once per weatherSet.
 	 */
-	def genReports() {
+	def genReports(key) {
 		if(!fetched){
 			DatabaseSetup ds = new DatabaseSetup()
+			def weatherDatabaseService
 			ds.register("localhost", "3306", "myTestWeatherDB", "root", "MKld597F")
 			ds.connect()
 			
-			List result = ds.executeQuery("select * from weatherData")
+			List result = ds.executeQuery("SELECT ("+tempColumnName+","+windDirColumnName+","+windSpeedColumnName+","+cloudCoverColumnName+") FROM weatherData WHERE "+idColumnName+"=")
 			
-			result.each ({ item -> reportString += "${item}"})
+			result.each ({ item -> reportString += "${item}\n"})
 			
 			result.each ({ item -> reports += new WeatherReport(item.get("day"),item.get("temp"),0.0f)})
-				//	def temp = item.get("temp")
-			//	def day = item.get("day")
-			//	reports += new WeatherReport(day,temp,0.0)
-				//reportString += "${item}-"
-				
-			
-			//	 })
-			
+						
 			// Retrieve info from database and create WeatherReports
 			fetched = true;
 		}

@@ -29,13 +29,37 @@
                             
                         </tr>
                     
+                        
+                    
                         <tr class="prop">
-                            <td valign="top" class="name"><g:message code="weatherSet.fetched.label" default="Fetched" /></td>
+                            <td valign="top" class="name"><g:message code="weatherSet.dbHost.label" default="Db Host" /></td>
                             
-                            <td valign="top" class="value"><g:formatBoolean boolean="${weatherSetInstance?.fetched}" /></td>
+                            <td valign="top" class="value">${fieldValue(bean: weatherSetInstance, field: "dbHost")}</td>
                             
                         </tr>
                     
+                        <tr class="prop">
+                            <td valign="top" class="name"><g:message code="weatherSet.dbName.label" default="Db Name" /></td>
+                            
+                            <td valign="top" class="value">${fieldValue(bean: weatherSetInstance, field: "dbName")}</td>
+                            
+                        </tr>
+                    
+                        <tr class="prop">
+                            <td valign="top" class="name"><g:message code="weatherSet.dbPass.label" default="Db Pass" /></td>
+                            
+                            <td valign="top" class="value">${fieldValue(bean: weatherSetInstance, field: "dbPass")}</td>
+                            
+                        </tr>
+                    
+                        <tr class="prop">
+                            <td valign="top" class="name"><g:message code="weatherSet.dbtableName.label" default="Db Table Name" /></td>
+                            
+                            <td valign="top" class="value">${fieldValue(bean: weatherSetInstance, field: "dbtableName")}</td>
+                            
+                        </tr>
+                    
+                                            
                         <tr class="prop">
                             <td valign="top" class="name"><g:message code="weatherSet.games.label" default="Games" /></td>
                             
@@ -49,13 +73,10 @@
                             
                         </tr>
                     
-                        <tr class="prop">
-                            <td valign="top" class="name"><g:message code="weatherSet.numberDays.label" default="Number Days" /></td>
-                            
-                            <td valign="top" class="value">${fieldValue(bean: weatherSetInstance, field: "numberDays")}</td>
-                            
-                        </tr>
+                       
                     
+                    
+                                            
                         <tr class="prop">
                             <td valign="top" class="name"><g:message code="weatherSet.reports.label" default="Reports" /></td>
                             
@@ -73,6 +94,49 @@
                             <td valign="top" class="name"><g:message code="weatherSet.startDate.label" default="Start Date" /></td>
                             
                             <td valign="top" class="value"><g:formatDate date="${weatherSetInstance?.startDate}" /></td>
+                            
+                        </tr>
+                        
+                        
+                        <tr class="prop">
+                            <td valign="top" class="name"><g:message code="weatherSet.numberDays.label" default="Number Days" /></td>
+                            
+                            <td valign="top" class="value">${fieldValue(bean: weatherSetInstance, field: "numberDays")}</td>
+                            
+                        </tr>
+                        
+                         <tr class="prop">
+                            <td valign="top" class="name"><g:message code="weatherSet.idColumnName.label" default="Id Column Name" /></td>
+                            
+                            <td valign="top" class="value">${fieldValue(bean: weatherSetInstance, field: "idColumnName")}</td>
+                            
+                        </tr>
+                    
+                        <tr class="prop">
+                            <td valign="top" class="name"><g:message code="weatherSet.tempColumnName.label" default="Temp Column Name" /></td>
+                            
+                            <td valign="top" class="value">${fieldValue(bean: weatherSetInstance, field: "tempColumnName")}</td>
+                            
+                        </tr>
+                    
+                        <tr class="prop">
+                            <td valign="top" class="name"><g:message code="weatherSet.windDirColumnName.label" default="Wind Dir Column Name" /></td>
+                            
+                            <td valign="top" class="value">${fieldValue(bean: weatherSetInstance, field: "windDirColumnName")}</td>
+                            
+                        </tr>
+                    
+                        <tr class="prop">
+                            <td valign="top" class="name"><g:message code="weatherSet.windSpeedColumnName.label" default="Wind Speed Column Name" /></td>
+                            
+                            <td valign="top" class="value">${fieldValue(bean: weatherSetInstance, field: "windSpeedColumnName")}</td>
+                            
+                        </tr>
+                        
+                        <tr class="prop">
+                            <td valign="top" class="name"><g:message code="weatherSet.cloudCoverColumnName.label" default="Cloud Cover Column Name" /></td>
+                            
+                            <td valign="top" class="value">${fieldValue(bean: weatherSetInstance, field: "cloudCoverColumnName")}</td>
                             
                         </tr>
                     

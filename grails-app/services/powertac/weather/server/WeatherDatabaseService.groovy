@@ -11,11 +11,17 @@ class WeatherDatabaseService {
 	String dbName
 	String username
 	String password
+	
+	String tempColumn
+	String windDirColumn
+	String windSpeedColumn
+	String cloudCoverColumn
+	
 	boolean registered = false
 	
 	def connect() {
 		if(registered){
-			//Sql sql = Sql.newInstance("jdbc:mysql://localhost:3306/test","root", "MKld597F", "com.mysql.jdbc.Driver")
+			
 			sql = Sql.newInstance("jdbc:mysql://"+ serverName +"/"+dbName,
 			username, password, "com.mysql.jdbc.Driver")
 		}
