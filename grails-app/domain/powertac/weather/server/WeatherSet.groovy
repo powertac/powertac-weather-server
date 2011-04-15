@@ -5,6 +5,11 @@ class WeatherSet {
 	Date startDate
 	int numberDays
 	boolean fetched
+	String tempColumnName
+	String windDirColumnName
+	String windSpeedColumnName
+	String cloudCoverColumnName
+	
 	String reportString = ""
 	
 	//static transients = {"fetched"}

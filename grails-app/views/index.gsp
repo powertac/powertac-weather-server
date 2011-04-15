@@ -76,6 +76,23 @@
                     </g:each>
                 </ul>
             </div>
+            <div class="section section-last">
+    <div class="section-header">
+      Installed PowerTAC Plugins
+    </div>
+    <ul>
+      <g:set var="pluginManager"
+          value="${applicationContext.getBean('pluginManager')}"></g:set>
+
+      <g:each var="plugin" in="${pluginManager.userPlugins}">
+        <g:if test="${plugin.name.contains('powertac')}">
+          <li>${plugin.name} - ${plugin.version}</li>
+        </g:if>
+      </g:each>
+
+    </ul>
+
+  </div>
         </div>
     </body>
 </html>

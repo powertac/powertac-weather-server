@@ -1,6 +1,7 @@
 package powertac.weather.server
 
 import groovy.sql.Sql
+import powertac.weather.server.WeatherService
 
 class WeatherSetController {
 
@@ -14,17 +15,16 @@ class WeatherSetController {
 		if(WeatherSet.findById(params.get("id")) != null){
 			WeatherSet.findById(params.get("id")).genReports();
 			def tmp = WeatherSet.get(params["id"])
-			String tmpString = "blah"
 			
-			WeatherSet.get(params["id"]).getReports()*.each ({ })
-			
-			render "Report Exists : \n" + tmp.reportString + "\n" + tmpString
+			render "Report Exists : \n" + tmp.reportString
 			
 		}else{
-			render "Error Set Doesnt Exist!"
+			def WeatherDatabaseService wds = new WeatherDatabaseService()
+			wds.register("localhost", "3306", "myTestWeatherDB", "root", "MKld597F")
+			wds.connect()
+			List result = wds.executeQuery("Select * From weatherData")
+			render result.toListString()
 		}
-		
-		
 		//render ds.executeQuery("Select * from users").toString();
 	}
 
