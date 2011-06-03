@@ -65,7 +65,7 @@ class WeatherSet {
 			ds.register("localhost", "3306", "myTestWeatherDB", "root", "MKld597F")
 			ds.connect()
 			
-			List result = ds.executeQuery("SELECT ("+tempColumnName+","+windDirColumnName+","+windSpeedColumnName+","+cloudCoverColumnName+") FROM weatherData WHERE "+idColumnName+"=")
+			List result = ds.executeQuery("SELECT ("+tempColumnName+","+windDirColumnName+","+windSpeedColumnName+","+cloudCoverColumnName+") FROM weatherData WHERE "+idColumnName+"="+key)
 			
 			result.each ({ item -> reportString += "${item}\n"})
 			
