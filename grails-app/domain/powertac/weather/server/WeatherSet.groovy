@@ -23,7 +23,7 @@ class WeatherSet {
     static constraints = {
     }
 	
-	static hasMany = [reports:WeatherReport,games:GameModel]
+	static hasMany = [reports:Report,games:GameModel]
 	
 	WeatherSet() {
 		

@@ -34,11 +34,11 @@ class WeatherService {
   int timeslotPhaseCount = 3 // # of phases/timeslot
   boolean running = false
   
-  def quartzScheduler
-  def clockDriveJob
-  def timeService // inject simulation time service dependency
+  //def quartzScheduler
+  //def clockDriveJob
+  //def timeService // inject simulation time service dependency
   
-  def phaseRegistrations
+  //def phaseRegistrations
   int timeslotCount = 0
   long timeslotMillis
   
@@ -89,7 +89,7 @@ class WeatherService {
  	 log.info("Stop simulation") 
  	 return
     }
-    def time = timeService.currentTime
+    //def time = timeService.currentTime
     log.info "step at $time"
    
     scheduleStep()
