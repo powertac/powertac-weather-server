@@ -17,6 +17,8 @@ class WeatherDatabaseService {
 	String windSpeedColumn
 	String cloudCoverColumn
 	
+	String defaultQuery = "SELECT id_date, id_hrmn, temp, wind_spd, wind_dir, 0.0 FROM historical_weather_data_minneapolis limit 24;"
+	
 	boolean registered = false
 	
 	def connect() {
@@ -26,6 +28,18 @@ class WeatherDatabaseService {
 			username, password, "com.mysql.jdbc.Driver")
 		}
 	}
+	
+	def defaultConnectRegister() {
+		registered = true
+		servername = "db.itlabs.umn.edu:3313"
+		dbName = "powertac"
+		this.username = "powertac"
+		this.password = "ce32985DRAjeL34dg"
+		
+	}
+	
+	
+	
 	
 	def register(String server, String port, String db, String username, String password){
 		registered = true

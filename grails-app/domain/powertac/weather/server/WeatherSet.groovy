@@ -23,7 +23,7 @@ class WeatherSet {
     static constraints = {
     }
 	
-	static hasMany = [reports:Report,games:GameModel]
+	//static hasMany = [reports:Report,games:GameModel]
 	
 	WeatherSet() {
 		
@@ -69,7 +69,7 @@ class WeatherSet {
 			
 			result.each ({ item -> reportString += "${item}\n"})
 			
-			result.each ({ item -> reports += new WeatherReport(item.get("day"),item.get("temp"),0.0f)})
+			result.each ({ item -> reports += new Report(item.get("day"),item.get("temp"),0.0f)})
 						
 			// Retrieve info from database and create WeatherReports
 			fetched = true;

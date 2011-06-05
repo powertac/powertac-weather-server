@@ -15,14 +15,14 @@ class WeatherSetController {
 		if(WeatherSet.findById(params.get("id")) != null){
 			WeatherSet.findById(params.get("id")).genReports();
 			def tmp = WeatherSet.get(params["id"])
-			
-			render "Report Exists : \n" + tmp.reportString
+			render "[key:value, key:value, key:value, key:value]"
+			//render "Report Exists : \n" + tmp.reportString
 			
 		}else{
 			def WeatherDatabaseService wds = new WeatherDatabaseService()
-			wds.register("localhost", "3306", "myTestWeatherDB", "root", "MKld597F")
+			wds.defaultConnectRegister()//("localhost", "3306", "myTestWeatherDB", "root", "MKld597F")
 			wds.connect()
-			List result = wds.executeQuery("Select * From weatherData")
+			List result = wds.executeQuery(wds.defaultQuery)
 			render result.toListString()
 		}
 		//render ds.executeQuery("Select * from users").toString();
