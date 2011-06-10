@@ -34,15 +34,15 @@ class WeatherSet {
 	 * Only works if there are actually weather reports generated
 	 */
 	
-	def gen48Forecast(int gameId){
+	/*def gen48Forecast(int gameId){
 		if(fetched){
-			return new WeatherReport()
+			return new Reports()
 		}else{
 			genReports()
 			gen48Forecast(gameId)
 		}	
 	}
-	
+	*/
 	
 	
 	/*
@@ -59,7 +59,7 @@ class WeatherSet {
 	 * This should only need to be called once per weatherSet.
 	 */
 	def genReports(key) {
-		if(!fetched){
+		/*if(!fetched){
 			DatabaseSetup ds = new DatabaseSetup()
 			def weatherDatabaseService
 			ds.register("localhost", "3306", "myTestWeatherDB", "root", "MKld597F")
@@ -73,6 +73,6 @@ class WeatherSet {
 						
 			// Retrieve info from database and create WeatherReports
 			fetched = true;
-		}
+		}*/
 	}
 }
