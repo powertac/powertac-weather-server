@@ -1,5 +1,7 @@
 package powertac.weather.server
 
+import java.awt.image.renderable.RenderableImage;
+
 import groovy.sql.Sql
 import powertac.weather.server.WeatherService
 
@@ -11,21 +13,24 @@ class WeatherSetController {
         redirect(action: "list", params: params)
     }
 	
+	
 	def weatherRequest = {
-		if(WeatherSet.findById(params.get("id")) == null){
-			//WeatherSet.findById(params.get("id")).genReports();
-			//def tmp = WeatherSet.get(params["id"])
-			render "[key:value, key:value, key:value, key:value]"
-			//render "Report Exists : \n" + tmp.reportString
+		if(WeatherSet.findById(params.get("id")) != null){
+			
+			render "Invalid ID, cannot retrieve weather tuples. Please check your queryString."
 			
 		}else{
+			// Grab the WeatherDatabaseService
 			def WeatherDatabaseService wds = new WeatherDatabaseService()
-			wds.defaultConnectRegister()//("localhost", "3306", "myTestWeatherDB", "root", "MKld597F")
+			
+			// Default connection to tac05, other users wont be able to access
+			// this database unless they are behind the firewall.
+			wds.defaultConnectRegister()
 			wds.connect()
 			List result = wds.executeQuery(wds.defaultQuery)
-			render result.toListString()
+			result.each {row -> render "[" +"id_date:"+ row[0] +", id_hrmn:" + row[1] + ", temp:"+ row[2]+", wind_spd:" +row[3]+", wind_dir:"+row[4]+", cloud_cvr:"+row[5] +" ]\n"}
+			
 		}
-		//render ds.executeQuery("Select * from users").toString();
 	}
 
     def list = {

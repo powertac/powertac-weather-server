@@ -1,6 +1,29 @@
+/*
+* Copyright 2011 the original author or authors.
+*
+* Licensed under the Apache License, Version 2.0 (the "License");
+* you may not use this file except in compliance with the License.
+* You may obtain a copy of the License at
+*
+* http://www.apache.org/licenses/LICENSE-2.0
+*
+* Unless required by applicable law or agreed to in writing, software
+* distributed under the License is distributed on an
+* "AS IS" BASIS,  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND,
+* either express or implied. See the License for the specific language
+* governing permissions and limitations under the License.
+*/
+
 package powertac.weather.server
 
-
+/**
+* A WeatherSet describes the connection string information to the backend 
+* weather database. The backend database is expected to be in a SQL style.
+*
+* @author Erik Onarheim, Josh Edeen
+*
+* @version 1.0 - 03/May/2011
+*/
 class WeatherSet {
 	Date startDate
 	int numberDays
@@ -17,62 +40,22 @@ class WeatherSet {
 	String dbtableName
 		
 	String reportString = ""
-	
-	//static transients = {"fetched"}
-	
+		
     static constraints = {
     }
 	
-	//static hasMany = [reports:Report,games:GameModel]
 	
 	WeatherSet() {
 		
 	}
 	
-	/*
-	 * Returns the applicable weatherReport for the active GameModel ID.
-	 * Only works if there are actually weather reports generated
-	 */
 	
-	/*def gen48Forecast(int gameId){
-		if(fetched){
-			return new Reports()
-		}else{
-			genReports()
-			gen48Forecast(gameId)
-		}	
-	}
-	*/
-	
-	
-	/*
-	 * Updates the current day and time with all active game models.
-	 * Deletes inactive models from the database.
-	 */
 	def update()  {
 		
 	}
 	
 		
-	/*
-	 * Generates the initial weather reports for the database.
-	 * This should only need to be called once per weatherSet.
-	 */
 	def genReports(key) {
-		/*if(!fetched){
-			DatabaseSetup ds = new DatabaseSetup()
-			def weatherDatabaseService
-			ds.register("localhost", "3306", "myTestWeatherDB", "root", "MKld597F")
-			ds.connect()
-			
-			List result = ds.executeQuery("SELECT ("+tempColumnName+","+windDirColumnName+","+windSpeedColumnName+","+cloudCoverColumnName+") FROM weatherData WHERE "+idColumnName+"="+key)
-			
-			result.each ({ item -> reportString += "${item}\n"})
-			
-			result.each ({ item -> reports += new Report(item.get("day"),item.get("temp"),0.0f)})
-						
-			// Retrieve info from database and create WeatherReports
-			fetched = true;
-		}*/
+		
 	}
 }
