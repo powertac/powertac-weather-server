@@ -31,7 +31,7 @@ class WeatherDatabaseService {
 	
 	def defaultConnectRegister() {
 		registered = true
-		servername = "db.itlabs.umn.edu:3313"
+		serverName = "db.itlabs.umn.edu:3313"
 		dbName = "powertac"
 		this.username = "powertac"
 		this.password = "ce32985DRAjeL34dg"

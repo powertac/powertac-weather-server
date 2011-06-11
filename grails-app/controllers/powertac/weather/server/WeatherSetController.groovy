@@ -12,9 +12,9 @@ class WeatherSetController {
     }
 	
 	def weatherRequest = {
-		if(WeatherSet.findById(params.get("id")) != null){
-			WeatherSet.findById(params.get("id")).genReports();
-			def tmp = WeatherSet.get(params["id"])
+		if(WeatherSet.findById(params.get("id")) == null){
+			//WeatherSet.findById(params.get("id")).genReports();
+			//def tmp = WeatherSet.get(params["id"])
 			render "[key:value, key:value, key:value, key:value]"
 			//render "Report Exists : \n" + tmp.reportString
 			
