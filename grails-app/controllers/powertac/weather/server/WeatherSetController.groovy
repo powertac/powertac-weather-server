@@ -25,7 +25,7 @@ class WeatherSetController {
 			
 			// Default connection to tac05, other users wont be able to access
 			// this database unless they are behind the firewall.
-			wds.defaultConnectRegister()
+			wds.defaultRegister()
 			wds.connect()
 			List result = wds.executeQuery(wds.defaultQuery)
 			result.each {row -> render "[" +"id_date:"+ row[0] +", id_hrmn:" + row[1] + ", temp:"+ row[2]+", wind_spd:" +row[3]+", wind_dir:"+row[4]+", cloud_cvr:"+row[5] +" ]\n"}

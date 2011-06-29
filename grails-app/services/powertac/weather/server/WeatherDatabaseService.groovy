@@ -4,7 +4,7 @@ import groovy.sql.Sql;
 
 class WeatherDatabaseService {
 
-    static transactional = true
+    static transactional = false
 	
 	Sql sql
 	String serverName
@@ -17,7 +17,9 @@ class WeatherDatabaseService {
 	String windSpeedColumn
 	String cloudCoverColumn
 	
+	
 	String defaultQuery = "SELECT id_date, id_hrmn, temp, wind_spd, wind_dir, 0.0 FROM historical_weather_data_minneapolis limit 24;"
+	
 	
 	boolean registered = false
 	
@@ -29,7 +31,7 @@ class WeatherDatabaseService {
 		}
 	}
 	
-	def defaultConnectRegister() {
+	def defaultRegister() {
 		registered = true
 		serverName = "db.itlabs.umn.edu:3313"
 		dbName = "powertac"
@@ -38,7 +40,9 @@ class WeatherDatabaseService {
 		
 	}
 	
-	
+	def genWeatherQuery(int weatherId){
+		String defaultWeatherQuery = "SELECT id_date, id_hrmn, temp, wind_spd, wind_dir, 0.0 FROM historical_weather_data_minneapolis limit 168;"
+	}
 	
 	
 	def register(String server, String port, String db, String username, String password){
