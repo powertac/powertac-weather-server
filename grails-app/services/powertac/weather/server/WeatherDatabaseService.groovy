@@ -36,10 +36,10 @@ class WeatherDatabaseService {
 	// Register for the default database connection, used for development purposes
 	def defaultRegister() {
 		registered = true
-		serverName = "localhost" //"db.itlabs.umn.edu:3313"
+		serverName = "db.itlabs.umn.edu:3313"
 		dbName = "powertac"
-		this.username = "root" //"powertac"
-		this.password = "MKld597F"//"ce32985DRAjeL34dg"
+		this.username = "powertac"
+		this.password = "ce32985DRAjeL34dg"
 		
 	}
 	
