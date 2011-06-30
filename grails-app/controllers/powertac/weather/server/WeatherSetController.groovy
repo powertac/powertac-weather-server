@@ -20,6 +20,15 @@ class WeatherSetController {
 			render "Invalid ID, cannot retrieve weather tuples. Please check your queryString."
 			
 		}else{
+			int weatherIdQ = 1
+			int nDaysOut = 3	
+		
+			//if(params.get("weather_id") != null && params.get("weather_days") != null){
+			//	weatherIdQ = params.get("weather_id")
+			//	nDaysOut = params.get("weather_days")
+			//}
+				
+		
 			// Grab the WeatherDatabaseService
 			def WeatherDatabaseService wds = new WeatherDatabaseService()
 			
@@ -27,8 +36,34 @@ class WeatherSetController {
 			// this database unless they are behind the firewall.
 			wds.defaultRegister()
 			wds.connect()
-			List result = wds.executeQuery(wds.defaultQuery)
-			result.each {row -> render "[" +"id_date:"+ row[0] +", id_hrmn:" + row[1] + ", temp:"+ row[2]+", wind_spd:" +row[3]+", wind_dir:"+row[4]+", cloud_cvr:"+row[5] +" ]\n"}
+			List reportResult = wds.executeQuery(wds.defaultQuery)
+			def query = wds.genWeatherQuery(weatherIdQ,nDaysOut)
+			println query
+			List forecastResult = wds.executeQuery(query)
+			List forecastMultipliers = wds.genForecastMultipliers(nDaysOut)
+			
+			
+			
+			
+			
+			reportResult.each {row -> render "[" +
+				 "id_weather:"+ row[0] +
+				 ", temp:"+ row[1]+
+				 ", wind_spd:" +row[2]+
+				 ", wind_dir:"+row[3]+
+				 ", cloud_cvr:"+row[4] +
+				 " ]\n"}
+			
+			render "---Forecast Data---\n"
+			
+			int i = 0
+			forecastResult.each{row -> render "["+
+				"id_weather:"+row[0] +
+				", temp:"+ (row[1]+row[1]*forecastMultipliers[i]) +
+				", wind_spd:" + (row[2]+row[2]*forecastMultipliers[i]) +
+				", wind_dir:"+ ((row[3]+row[3]*forecastMultipliers[i])%360) +
+				", cloud_cvr:"+ (row[4]+row[4]*forecastMultipliers[i++]) +
+				" ]\n"}
 			
 		}
 	}
