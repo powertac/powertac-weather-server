@@ -23,10 +23,15 @@ class WeatherSetController {
 			int weatherIdQ = 1
 			int nDaysOut = 3	
 		
-			//if(params.get("weather_id") != null && params.get("weather_days") != null){
-			//	weatherIdQ = params.get("weather_id")
-			//	nDaysOut = params.get("weather_days")
-			//}
+			if(params.get("weather_id") != null && params.get("weather_days") != null){
+				weatherIdQ = params.get("weather_id").toInteger()
+				nDaysOut = params.get("weather_days").toInteger()
+			}
+			
+			if(weatherIdQ > 900 && params.get("setname")=="default"){
+					weatherIdQ = weatherIdQ%901
+			}
+			
 				
 		
 			// Grab the WeatherDatabaseService
@@ -36,14 +41,12 @@ class WeatherSetController {
 			// this database unless they are behind the firewall.
 			wds.defaultRegister()
 			wds.connect()
-			List reportResult = wds.executeQuery(wds.defaultQuery)
+			List reportResult = wds.executeQuery(wds.genDefaultQuery(weatherIdQ))
+			
 			def query = wds.genWeatherQuery(weatherIdQ,nDaysOut)
 			println query
 			List forecastResult = wds.executeQuery(query)
-			List forecastMultipliers = wds.genForecastMultipliers(nDaysOut)
-			
-			
-			
+			List forecastMultipliers = wds.genForecastMultipliers(nDaysOut)			
 			
 			
 			reportResult.each {row -> render "[" +

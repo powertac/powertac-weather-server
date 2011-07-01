@@ -36,13 +36,23 @@ class WeatherDatabaseService {
 	// Register for the default database connection, used for development purposes
 	def defaultRegister() {
 		registered = true
-		serverName = "db.itlabs.umn.edu:3313"
+		serverName = "localhost"//"db.itlabs.umn.edu:3313"
 		dbName = "powertac"
-		this.username = "powertac"
-		this.password = "ce32985DRAjeL34dg"
+		this.username = "root"//"powertac"
+		this.password = "MKld597F"//"ce32985DRAjeL34dg"
 		
 	}
-	
+	// Generate the default query
+	def genDefaultQuery(int weatherId){
+		String defaultWeatherQuery =
+		"SELECT id_weather, temp, wind_spd, wind_dir, 0.0 " +
+		"FROM historical_weather_data_minneapolis " +
+		"WHERE id_weather >= " + weatherId +
+		" AND id_weather < " + (weatherId+24)  +
+		" LIMIT " + 24 + ";"
+		
+		return defaultWeatherQuery
+	}
 	// Generate the query from the current weather id and a number of days out to get the forecast rows, assuming 12 server requests
 	def genWeatherQuery(int weatherId, int nDaysOut){
 		int nRecords = 12*2 + nDaysOut*48 // Every 12 hours the database is pulled, 2 timeslots per hour and 48 timeslots per day
