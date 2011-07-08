@@ -42,7 +42,7 @@
                                     <label for="dbHost"><g:message code="weatherSet.dbHost.label" default="Db Host" /></label>
                                 </td>
                                 <td valign="top" class="value ${hasErrors(bean: weatherSetInstance, field: 'dbHost', 'errors')}">
-                                    <g:textField name="dbHost" value="${weatherSetInstance?.dbHost}" />
+                                    <g:textField name="dbHost" value="db.itlabs.umn.edu:3313" />
                                 </td>
                             </tr>
                         
@@ -51,7 +51,7 @@
                                     <label for="dbName"><g:message code="weatherSet.dbName.label" default="Db Name" /></label>
                                 </td>
                                 <td valign="top" class="value ${hasErrors(bean: weatherSetInstance, field: 'dbName', 'errors')}">
-                                    <g:textField name="dbName" value="${weatherSetInstance?.dbName}" />
+                                    <g:textField name="dbName" value="powertac" />
                                 </td>
                             </tr>
                         
@@ -60,7 +60,7 @@
                                     <label for="dbPass"><g:message code="weatherSet.dbPass.label" default="Db Pass" /></label>
                                 </td>
                                 <td valign="top" class="value ${hasErrors(bean: weatherSetInstance, field: 'dbPass', 'errors')}">
-                                    <g:textField name="dbPass" value="${weatherSetInstance?.dbPass}" />
+                                    <g:passwordField name="dbPass" value="somepassword" />
                                 </td>
                             </tr>
                         
@@ -69,7 +69,7 @@
                                     <label for="dbtableName"><g:message code="weatherSet.dbtableName.label" default="Db Table Name" /></label>
                                 </td>
                                 <td valign="top" class="value ${hasErrors(bean: weatherSetInstance, field: 'dbtableName', 'errors')}">
-                                    <g:textField name="dbtableName" value="${weatherSetInstance?.dbtableName}" />
+                                    <g:textField name="dbtableName" value="historical_weather_data_minneapolis" />
                                 </td>
                             </tr>
                         	<tr class="prop">
@@ -82,10 +82,10 @@
                             
                             <tr class="prop">
                                 <td valign="top" class="name">
-                                    <label for="startDate"><g:message code="weatherSet.startDate.label" default="Start Date" /></label>
+                                    <label for="startId"><g:message code="weatherSet.startId.label" default="Start Id" /></label>
                                 </td>
-                                <td valign="top" class="value ${hasErrors(bean: weatherSetInstance, field: 'startDate', 'errors')}">
-                                    <g:datePicker name="startDate" precision="day" value="${weatherSetInstance?.startDate}"  />
+                                <td valign="top" class="value ${hasErrors(bean: weatherSetInstance, field: 'startId', 'errors')}">
+                                    <g:textField name="startId" value="1"  />
                                 </td>
                             </tr>
                             
@@ -94,7 +94,7 @@
                                     <label for="numberDays"><g:message code="weatherSet.numberDays.label" default="Number Days" /></label>
                                 </td>
                                 <td valign="top" class="value ${hasErrors(bean: weatherSetInstance, field: 'numberDays', 'errors')}">
-                                    <g:textField name="numberDays" value="${fieldValue(bean: weatherSetInstance, field: 'numberDays')}" />
+                                    <g:textField name="numberDays" value="24" />
                                 </td>
                             </tr>
                             
@@ -111,7 +111,7 @@
                                     <label for="idColumnName"><g:message code="weatherSet.idColumnName.label" default="Id Column Name" /></label>
                                 </td>
                                 <td valign="top" class="value ${hasErrors(bean: weatherSetInstance, field: 'idColumnName', 'errors')}">
-                                    <g:textField name="idColumnName" value="${weatherSetInstance?.idColumnName}" />
+                                    <g:textField name="idColumnName" value="id_weather" />
                                 </td>
                             </tr>
                         
@@ -121,7 +121,7 @@
                                     <label for="tempColumnName"><g:message code="weatherSet.tempColumnName.label" default="Temp Column Name" /></label>
                                 </td>
                                 <td valign="top" class="value ${hasErrors(bean: weatherSetInstance, field: 'tempColumnName', 'errors')}">
-                                    <g:textField name="tempColumnName" value="${weatherSetInstance?.tempColumnName}" />
+                                    <g:textField name="tempColumnName" value="temp" />
                                 </td>
                             </tr>
                         
@@ -130,7 +130,7 @@
                                     <label for="windDirColumnName"><g:message code="weatherSet.windDirColumnName.label" default="Wind Dir Column Name" /></label>
                                 </td>
                                 <td valign="top" class="value ${hasErrors(bean: weatherSetInstance, field: 'windDirColumnName', 'errors')}">
-                                    <g:textField name="windDirColumnName" value="${weatherSetInstance?.windDirColumnName}" />
+                                    <g:textField name="windDirColumnName" value="wind_dir" />
                                 </td>
                             </tr>
                         
@@ -139,7 +139,7 @@
                                     <label for="windSpeedColumnName"><g:message code="weatherSet.windSpeedColumnName.label" default="Wind Speed Column Name" /></label>
                                 </td>
                                 <td valign="top" class="value ${hasErrors(bean: weatherSetInstance, field: 'windSpeedColumnName', 'errors')}">
-                                    <g:textField name="windSpeedColumnName" value="${weatherSetInstance?.windSpeedColumnName}" />
+                                    <g:textField name="windSpeedColumnName" value="wind_spd" />
                                 </td>
                             </tr>
                             
@@ -148,7 +148,7 @@
                                     <label for="cloudCoverColumnName"><g:message code="weatherSet.cloudCoverColumnName.label" default="Cloud Cover Column Name" /></label>
                                 </td>
                                 <td valign="top" class="value ${hasErrors(bean: weatherSetInstance, field: 'cloudCoverColumnName', 'errors')}">
-                                    <g:textField name="cloudCoverColumnName" value="${weatherSetInstance?.cloudCoverColumnName}" />
+                                    <g:textField name="cloudCoverColumnName" value="0.0" />
                                 </td>
                             </tr>
                         

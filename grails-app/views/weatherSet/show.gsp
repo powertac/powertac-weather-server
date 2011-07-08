@@ -48,7 +48,7 @@
                         <tr class="prop">
                             <td valign="top" class="name"><g:message code="weatherSet.dbPass.label" default="Db Pass" /></td>
                             
-                            <td valign="top" class="value">${fieldValue(bean: weatherSetInstance, field: "dbPass")}</td>
+                            <td valign="top" class="value"><i>hidden</i></td>
                             
                         </tr>
                     
@@ -61,39 +61,9 @@
                     
                                             
                         <tr class="prop">
-                            <td valign="top" class="name"><g:message code="weatherSet.games.label" default="Games" /></td>
+                            <td valign="top" class="name"><g:message code="weatherSet.startId.label" default="Start ID" /></td>
                             
-                            <td valign="top" style="text-align: left;" class="value">
-                                <ul>
-                                <g:each in="${weatherSetInstance.games}" var="g">
-                                    <li><g:link controller="gameModel" action="show" id="${g.id}">${g?.encodeAsHTML()}</g:link></li>
-                                </g:each>
-                                </ul>
-                            </td>
-                            
-                        </tr>
-                    
-                       
-                    
-                    
-                                            
-                        <tr class="prop">
-                            <td valign="top" class="name"><g:message code="weatherSet.reports.label" default="Reports" /></td>
-                            
-                            <td valign="top" style="text-align: left;" class="value">
-                                <ul>
-                                <g:each in="${weatherSetInstance.reports}" var="r">
-                                    <li><g:link controller="weatherReport" action="show" id="${r.id}">${r?.encodeAsHTML()}</g:link></li>
-                                </g:each>
-                                </ul>
-                            </td>
-                            
-                        </tr>
-                    
-                        <tr class="prop">
-                            <td valign="top" class="name"><g:message code="weatherSet.startDate.label" default="Start Date" /></td>
-                            
-                            <td valign="top" class="value"><g:formatDate date="${weatherSetInstance?.startDate}" /></td>
+                            <td valign="top" class="value">${fieldValue(bean: weatherSetInstance, field: "startId")} </td>
                             
                         </tr>
                         

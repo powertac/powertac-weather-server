@@ -25,7 +25,7 @@ package powertac.weather.server
 * @version 1.0 - 03/May/2011
 */
 class WeatherSet {
-	Date startDate
+	int startId
 	int numberDays
 	boolean fetched
 	String tempColumnName
