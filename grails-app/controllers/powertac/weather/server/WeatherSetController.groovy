@@ -39,34 +39,48 @@ class WeatherSetController {
 			
 			// Default connection to tac05, other users wont be able to access
 			// this database unless they are behind the firewall.
-			wds.defaultRegister()
-			wds.connect()
-			List reportResult = wds.executeQuery(wds.genDefaultQuery(weatherIdQ))
+			if(params.get("setname")=="default"){
+				wds.defaultRegister()
+				wds.connect()
+				List reportResult = wds.executeQuery(wds.genDefaultQuery(weatherIdQ))
+				
+				def query = wds.genWeatherQuery(weatherIdQ,nDaysOut)
+				println query
+				List forecastResult = wds.executeQuery(query)
+				List forecastMultipliers = wds.genForecastMultipliers(nDaysOut)
+				
+				float prevTemp = 0
+				reportResult.each {row -> 
+					 render "[" +
+					 "id_weather:"+ row[0] +
+					 ", temp:"+ ((row[1] == 999.9f) ? prevTemp : row[1]) +
+					 ", wind_spd:" +row[2]+
+					 ", wind_dir:"+row[3]+
+					 ", cloud_cvr:"+row[4] +
+					 " ]\n"
+					 
+					 prevTemp = ((row[1] != 999.9f) ? row[1] : prevTemp) 
+					 }
+				
+				render "---Forecast Data---\n"
+				
+				int i = 0
+				forecastResult.each{row -> 
+					def tmpRow = ((row[1] == 999.9f) ? prevTemp : row[1])
+					render "["+
+					"id_weather:"+row[0] +
+					", temp:"+ (tmpRow+tmpRow*forecastMultipliers[i]) +
+					", wind_spd:" + (row[2]+row[2]*forecastMultipliers[i]) +
+					", wind_dir:"+ ((row[3]+row[3]*forecastMultipliers[i])%360) +
+					", cloud_cvr:"+ (row[4]+row[4]*forecastMultipliers[i++]) +
+					" ]\n"
+					
+					prevTemp = ((row[1] != 999.9f) ? row[1] : prevTemp)
+					}
+			}else{
+				render "Error -- No Permissions"
+			}
 			
-			def query = wds.genWeatherQuery(weatherIdQ,nDaysOut)
-			println query
-			List forecastResult = wds.executeQuery(query)
-			List forecastMultipliers = wds.genForecastMultipliers(nDaysOut)			
-			
-			
-			reportResult.each {row -> render "[" +
-				 "id_weather:"+ row[0] +
-				 ", temp:"+ row[1]+
-				 ", wind_spd:" +row[2]+
-				 ", wind_dir:"+row[3]+
-				 ", cloud_cvr:"+row[4] +
-				 " ]\n"}
-			
-			render "---Forecast Data---\n"
-			
-			int i = 0
-			forecastResult.each{row -> render "["+
-				"id_weather:"+row[0] +
-				", temp:"+ (row[1]+row[1]*forecastMultipliers[i]) +
-				", wind_spd:" + (row[2]+row[2]*forecastMultipliers[i]) +
-				", wind_dir:"+ ((row[3]+row[3]*forecastMultipliers[i])%360) +
-				", cloud_cvr:"+ (row[4]+row[4]*forecastMultipliers[i++]) +
-				" ]\n"}
 			
 		}
 	}

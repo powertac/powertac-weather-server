@@ -36,10 +36,10 @@ class WeatherDatabaseService {
 	// Register for the default database connection, used for development purposes
 	def defaultRegister() {
 		registered = true
-		serverName = "localhost"//"db.itlabs.umn.edu:3313"
+		serverName = "db.itlabs.umn.edu:3313"
 		dbName = "powertac"
-		this.username = "root"//"powertac"
-		this.password = "MKld597F"//"ce32985DRAjeL34dg"
+		this.username = "powertac"
+		this.password = "ce32985DRAjeL34dg"
 		
 	}
 	// Generate the default query
@@ -47,8 +47,8 @@ class WeatherDatabaseService {
 		String defaultWeatherQuery =
 		"SELECT id_weather, temp, wind_spd, wind_dir, 0.0 " +
 		"FROM historical_weather_data_minneapolis " +
-		"WHERE id_weather >= " + weatherId +
-		" AND id_weather < " + (weatherId+24)  +
+		"WHERE id_weather >= " + (weatherId % 900) +
+		" " + ((weatherId+24 > 900) ? "OR" : "AND") + " id_weather <= " + ((weatherId+24) % 900)  +
 		" LIMIT " + 24 + ";"
 		
 		return defaultWeatherQuery
@@ -59,8 +59,8 @@ class WeatherDatabaseService {
 		String defaultWeatherQuery = 
 		"SELECT id_weather, temp, wind_spd, wind_dir, 0.0 " +
 		"FROM historical_weather_data_minneapolis " +
-		"WHERE id_weather >= " + weatherId + 
-		" AND id_weather <= " + (weatherId+nRecords)  +
+		"WHERE id_weather >= " + (weatherId % 900) + 
+		" " + ((weatherId+nRecords > 900) ? "OR" : "AND") + " id_weather <= " + ((weatherId+nRecords) % 900)  +
 		" LIMIT " + nRecords + ";"
 		
 		return defaultWeatherQuery
