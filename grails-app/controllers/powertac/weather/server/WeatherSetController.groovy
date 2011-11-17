@@ -3,7 +3,6 @@ package powertac.weather.server
 import java.awt.image.renderable.RenderableImage;
 
 import groovy.sql.Sql
-import powertac.weather.server.WeatherService
 
 class WeatherSetController {
 
