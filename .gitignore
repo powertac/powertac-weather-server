@@ -1,12 +1,33 @@
+# Don't commit changes to these files out unless you know what you are doing
+.classpath
+.project
+.gitmodules
+rw.gitmodules
+accounting
+auctioneer
+default-broker
+distribution-utility
+genco
+household-customer
+server-interface
+
 # IntelliJ IDEA project files
 *.iml
 *.ipr
 *.iws
 .idea/
 
-# Deployment directories
+# editor temp files
+*~
+
+# Deployment directories and runtime artifacts
+bin/
 target/
 activemq-data/
+logs/
+log/
+.settings/
+server-main/boot-data.xml
 
 # OS generated files
 .DS_Store?
@@ -14,10 +35,10 @@ activemq-data/
 ehthumbs.db
 Icon?
 Thumbs.db
+*.log
 
 # Compiled source
 *.class
 
 # Cobertura generated files
 cobertura.ser
-
