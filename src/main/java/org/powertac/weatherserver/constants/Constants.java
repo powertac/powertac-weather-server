@@ -15,5 +15,9 @@ public class Constants {
 	public static final String RESPONSE_WEATHER_FORECAST = "<weatherForecast id=\"%s\" date=\"%s\" temp=\"%s\" windspeed=\"%s\" winddir=\"%s\" cloudcover=\"%s\" />\n";
 	public static final String RESPONSE_ENERGY_REPORT = "<energyReport id=\"%s\" date=\"%s\" price=\"%s\"/>\n";
 	
+	public static final String DB_SELECT_REPORT = "SELECT weatherId, weatherDate, temp, windSpeed, windDir,cloudCover FROM ? WHERE weatherId=? OR weatherDate=?";
+	public static final String DB_SELECT_FORECAST = "SELECT weatherId, weatherDate, temp, windSpeed, windDir,cloudCover FROM ? WHERE weatherId=? OR weatherDate=?";
+	public static final String DB_SELECT_ENERGY = "SELECT energyId, energyDate, price, FROM ? WHERE energyId=? OR energyDate=?";
+	
 
 }
