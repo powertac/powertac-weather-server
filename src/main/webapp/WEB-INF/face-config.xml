@@ -9,10 +9,8 @@
 
 	<!-- Listeners -->
 	<lifecycle>
-		<phase-listener>
-			org.powertac.weatherserver.Rest
-			
-		</phase-listener>
+		<phase-listener>org.powertac.weatherserver.Rest</phase-listener>
+		<phase-listener>org.powertac.weatherserver.PhaseTracker</phase-listener>
 	</lifecycle>
 	
 
