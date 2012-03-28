@@ -3,6 +3,7 @@ package org.powertac.weatherserver.database;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.sql.Connection;
+import java.sql.Date;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -29,9 +30,10 @@ public class Database {
 	private String id = "";
 
 	// Data limiting factors
-	private String location = "";
 	private String datemin = "";
 	private String datemax = "";
+	
+	private List<String> locations;
 
 	private String reportTable = "";
 	private String forecastTable = "";
@@ -54,6 +56,7 @@ public class Database {
 	Properties prop = new Properties();
 
 	public Database() {
+		locations = new ArrayList<String>();
 		try {
 
 			prop.load(Database.class.getClassLoader().getResourceAsStream(
@@ -68,9 +71,9 @@ public class Database {
 			this.setPassword(prop.getProperty("db.password"));
 
 			// Configuration Related properties
-			this.setDatemin(prop.getProperty("datemin"));
-			this.setDatemax(prop.getProperty("datemax"));
-			this.setLocation(prop.getProperty("location"));
+			this.setDatemin(prop.getProperty("publicDateMin"));
+			this.setDatemax(prop.getProperty("publicDateMax"));
+			this.setLocations(prop.getProperty("publicLocations"));
 			this.setReportTable(prop.getProperty("reportTable"));
 			this.setForecastTable(prop.getProperty("forecastTable"));
 			this.setEnergyTable(prop.getProperty("energyTable"));
@@ -110,31 +113,46 @@ public class Database {
 
 	public List<Weather> getWeatherList(String startDate, String location) throws SQLException {
 		checkDb();
+		
+		// Datestring is not the correct length
+		if (startDate.length() != 10){
+			return new ArrayList<Weather>();
+		}
+		
 		if (weatherStatement == null) {
 			weatherStatement = conn.prepareStatement(String.format(Constants.DB_SELECT_REPORT,this.reportTable));
 		}
 
-		
-		weatherStatement.setDate(1, (new DateString(startDate)).getSqlDate());
-		weatherStatement.setString(2, location);
-
-		ResultSet result = weatherStatement.executeQuery();
-
-		List<Weather> list = new ArrayList<Weather>();
-		
-		while(result.next()){
-			Weather w = new Weather();
-			w.setWeatherId(result.getString("weatherId"));
-			w.setWeatherDate(result.getString("weatherDate"));
-			w.setTemp(result.getString("temp"));
-			w.setWindDir(result.getString("windDir"));
-			w.setWindSpeed(result.getString("windSpeed"));
-			w.setCloudCover(result.getString("cloudCover"));
-			w.setLocation(result.getString("location"));
-			list.add(w);
+		// Check to make sure they are requesting public data
+		if (this.getLocations().contains(location) && this.validDate(startDate)){
+			System.out.println("Datestring: " + startDate);
+			System.out.println("Sql Date: " + new DateString(startDate).getLocaleString());
+			//weatherStatement.setDate(1, (new DateString(startDate)).getSqlDate());
+			weatherStatement.setString(1, new DateString(startDate).getLocaleString());
+			weatherStatement.setString(2, location);
+	
+			ResultSet result = weatherStatement.executeQuery();
+	
+			List<Weather> list = new ArrayList<Weather>();
+			
+			while(result.next()){
+				Weather w = new Weather();
+				w.setWeatherId(result.getString("weatherId"));
+				w.setWeatherDate(result.getString("weatherDate"));
+				w.setTemp(result.getString("temp"));
+				w.setWindDir(result.getString("windDir"));
+				w.setWindSpeed(result.getString("windSpeed"));
+				w.setCloudCover(result.getString("cloudCover"));
+				w.setLocation(result.getString("location"));
+				list.add(w);
+			}
+			
+			return list;
+		}else{
+			return new ArrayList<Weather>();
 		}
 		
-		return list;
+		
 
 	}
 
@@ -212,14 +230,6 @@ public class Database {
 		this.dbms = dbms;
 	}
 
-	public String getLocation() {
-		return location;
-	}
-
-	public void setLocation(String location) {
-		this.location = location;
-	}
-
 	public String getDatemin() {
 		return datemin;
 	}
@@ -258,6 +268,26 @@ public class Database {
 
 	public void setEnergyTable(String energyTable) {
 		this.energyTable = energyTable;
+	}
+
+	public List<String> getLocations() {
+		return locations;
+	}
+
+	public void setLocations(String locations) {
+		for(String s :locations.split(",")){
+			this.locations.add(s.trim());
+		}
+		
+	}
+	
+	public boolean validDate(String date){
+		Date sqlDatemin = new DateString(this.getDatemin()).getSqlDate();
+		Date sqlDatemax = new DateString(this.getDatemax()).getSqlDate();
+		Date testDate = new DateString(date).getSqlDate();
+		
+		return (testDate.before(sqlDatemax) && testDate.after(sqlDatemin));
+		
 	}
 
 }

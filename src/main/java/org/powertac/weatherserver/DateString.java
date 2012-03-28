@@ -6,6 +6,7 @@ import java.util.Calendar;
 public class DateString {
 	private Date sqlDate;
 	private Calendar date;
+	private String localeString;
 	public DateString(String input){
 		sqlDate = new Date(0);
 		date = Calendar.getInstance();
@@ -21,14 +22,15 @@ public class DateString {
 		String mm = input.substring(4, 6);
 		String yyyy = input.substring(6);
 		date.set(Integer.parseInt(yyyy), Integer.parseInt(mm), Integer.parseInt(dd), Integer.parseInt(hh), 0);
-		System.out.println("Hour: " + hh);
-		System.out.println("Day: " + dd);
-		System.out.println("Month: " + mm);
-		System.out.println("Year: " + yyyy);
+		String tmp = String.format("%s-%s-%s %s:%s:%s", yyyy,mm,dd,hh,"00","00");
+		this.setLocaleString(tmp);
+		
 	}
 	
 	public Date getSqlDate(){
-		return new Date(date.getTimeInMillis());
+		Date sql = new Date(0);
+		sql.setTime(date.getTime().getTime());
+		return sql;//new Date(date.getTimeInMillis());
 	}
 	
 	public void setSqlDate(Date sqlDate){
@@ -41,6 +43,14 @@ public class DateString {
 
 	public void setDate(Calendar date) {
 		this.date = date;
+	}
+
+	public String getLocaleString() {
+		return localeString;
+	}
+
+	public void setLocaleString(String localeString) {
+		this.localeString = localeString;
 	}
 
 }
