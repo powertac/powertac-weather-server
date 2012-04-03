@@ -35,6 +35,7 @@ public class Database {
 	
 	private List<String> locations;
 
+	private String implementation = "";
 	private String reportTable = "";
 	private String forecastTable = "";
 	private String energyTable = "";
@@ -55,10 +56,11 @@ public class Database {
 	Properties connectionProps = new Properties();
 	Properties prop = new Properties();
 
+	
+	
 	public Database() {
 		locations = new ArrayList<String>();
 		try {
-
 			prop.load(Database.class.getClassLoader().getResourceAsStream(
 					"/weatherserver.properties"));
 			System.out.println(prop);
@@ -74,6 +76,8 @@ public class Database {
 			this.setDatemin(prop.getProperty("publicDateMin"));
 			this.setDatemax(prop.getProperty("publicDateMax"));
 			this.setLocations(prop.getProperty("publicLocations"));
+			
+			this.setImplementation(prop.getProperty("implementation"));
 			this.setReportTable(prop.getProperty("reportTable"));
 			this.setForecastTable(prop.getProperty("forecastTable"));
 			this.setEnergyTable(prop.getProperty("energyTable"));
@@ -156,14 +160,131 @@ public class Database {
 
 	}
 
-	public List<Forecast> getForecastList() {
+	public List<Forecast> getForecastList(String weatherDate, String weatherLocation) throws SQLException {
 		checkDb();
+		
+		// Procedural implementation does a trend based random walk
+		if(implementation.equals("procedural")){
+			double tau0 = Double.parseDouble(prop.getProperty("tau0"));
+			double sigma = Double.parseDouble(prop.getProperty("sigma"));
+			
+			DateString beforeDate = new DateString(weatherDate);
+			DateString afterDate = new DateString(weatherDate);
+			
+			beforeDate.shiftBackDay();
+			afterDate.shiftAheadDay();
+			
+			List<Weather> rollingBefore = this.getWeatherList(beforeDate.getLocaleString(), weatherLocation);
+			List<Weather> rollingMiddle = this.getWeatherList(weatherDate, weatherLocation);
+			List<Weather> rollingAfter  = this.getWeatherList(afterDate.getLocaleString(), weatherLocation);
+			
+			
+			Weather[] avgWeather = new Weather[rollingBefore.size()];
+			for (int i = 0; i < avgWeather.length ; i++){
+				List<Weather> tmpList = new ArrayList<Weather>();
+				tmpList.add(rollingBefore.get(i));
+				tmpList.add(rollingMiddle.get(i));
+				tmpList.add(rollingAfter.get(i));
+				avgWeather[i] = avgReports(tmpList);
+			}
+			
+			List<Forecast> result = new ArrayList<Forecast>();
+			
+			Forecast tmpForecast;
+			
+			for(int i=0; i<2; i++){
+				for(Weather w : avgWeather){
+					tmpForecast = new Forecast();
+					
+					tmpForecast.setWeatherDate(w.getWeatherDate());
+					
+					Double newTemp = Double.parseDouble(w.getTemp()) * tau0;
+					tmpForecast.setTemp(newTemp.toString());
+					
+					Double newWindDir = Double.parseDouble((w.getWindDir().equalsIgnoreCase("***")?"0":w.getWindDir())) * tau0; 
+					tmpForecast.setWindDir(newWindDir.toString());
+					
+					Double newWindSpeed = Double.parseDouble((w.getWindSpeed().equalsIgnoreCase("***")?"0":w.getWindSpeed())) * tau0;
+					tmpForecast.setWindSpeed(newWindSpeed.toString());
+					
+					String newCloudCover = clampCloudCover( getCloudCoverValue(w.getCloudCover()) * tau0 );
+					tmpForecast.setCloudCover(newCloudCover);
+					
+					result.add(tmpForecast);		
+				}
+			}
+			
+			return result;
+			
+			
+		}else{
+			// TODO: Implement database query
+		}
+		
 		return null;
 	}
 
-	public List<Energy> getEnergyList() {
+	public List<Energy> getEnergyList(String weatherDate, String weatherLocation) {
 		checkDb();
 		return null;
+	}
+	
+	private Weather avgReports(List<Weather> weathers){
+		Weather tmpWeather = new Weather();
+		for (Weather w : weathers){
+			tmpWeather.setWeatherDate(w.getWeatherDate());			
+			tmpWeather.setLocation(w.getLocation());
+			
+			Double newTemp = Double.parseDouble(w.getTemp()) + Double.parseDouble(tmpWeather.getTemp());
+			tmpWeather.setTemp(newTemp.toString());
+			
+			Double newWindDir = Double.parseDouble((w.getWindDir().equalsIgnoreCase("***")?"0":w.getWindDir())) + 
+								Double.parseDouble((tmpWeather.getWindDir().equalsIgnoreCase("***")?"0":w.getWindDir()));
+			tmpWeather.setWindDir(newWindDir.toString());
+			
+			
+			
+			Double newWindSpeed = Double.parseDouble((w.getWindSpeed().equalsIgnoreCase("***")?"0":w.getWindSpeed())) + 
+								  Double.parseDouble((tmpWeather.getWindSpeed().equalsIgnoreCase("***")?"0":w.getWindSpeed()));
+			tmpWeather.setWindSpeed(newWindSpeed.toString());
+			
+			String newCloudCover = clampCloudCover( getCloudCoverValue(w.getCloudCover()) + getCloudCoverValue(tmpWeather.getCloudCover()));
+			tmpWeather.setCloudCover(newCloudCover);
+			
+			
+		}
+		
+		return tmpWeather;
+		
+	}
+	
+	private double getCloudCoverValue(String s){
+		if(s.equalsIgnoreCase("clr")){
+			return 0.0;
+		}else if (s.equalsIgnoreCase("sct")){
+			return 3.0/8.0;
+		}else if (s.equalsIgnoreCase("bkn")){
+			return 6.0/8.0;
+		}else if (s.equalsIgnoreCase("ovc")){
+			return 1.0;
+		}else if (s.equalsIgnoreCase("obs")){
+			return 1.0;
+		}else{
+			return 1.0;
+		}
+		
+	}
+	
+	private String clampCloudCover(Double value){
+		if(value < 1.0/8.0){
+			return "CLR";
+		}else if (value < 4.0/8.0){
+			return "SCT";
+		}else if (value < 7.0/8.0){
+			return "BKN";
+		}else{
+			return "OVC";
+		}
 	}
 
 	public String getDate() {
@@ -288,6 +409,14 @@ public class Database {
 		
 		return (testDate.before(sqlDatemax) && testDate.after(sqlDatemin));
 		
+	}
+
+	public String getImplementation() {
+		return implementation;
+	}
+
+	public void setImplementation(String implementation) {
+		this.implementation = implementation;
 	}
 
 }

@@ -7,6 +7,8 @@ import java.util.Map;
 import javax.faces.bean.ManagedBean;
 import javax.faces.context.FacesContext;
 
+import org.powertac.weatherserver.beans.Energy;
+import org.powertac.weatherserver.beans.Forecast;
 import org.powertac.weatherserver.beans.Weather;
 import org.powertac.weatherserver.constants.Constants;
 import org.powertac.weatherserver.database.Database;
@@ -51,21 +53,35 @@ public class Parser {
 			
 			
 			List<Weather> reports = null;
+			List<Forecast> forecasts = null;
+			List<Energy> energy = null;
+			
 			if (weatherDate != null && weatherLocation != null){
 				Database db = (Database) FacesContext.getCurrentInstance().getExternalContext().getApplicationMap().get("database");
 				try {
-					reports = db.getWeatherList(weatherDate, weatherLocation);
+					if(responseType.equalsIgnoreCase("all")){
+						reports = db.getWeatherList(weatherDate, weatherLocation);
+						forecasts = db.getForecastList(weatherDate, weatherLocation);
+						energy = db.getEnergyList(weatherDate, weatherLocation);
+					}else if(responseType.equalsIgnoreCase("report")){
+						reports = db.getWeatherList(weatherDate, weatherLocation);						
+					}else if(responseType.equalsIgnoreCase("forecast")){
+						forecasts = db.getForecastList(weatherDate, weatherLocation);
+					}else if(responseType.equalsIgnoreCase("energy")){
+						energy = db.getEnergyList(weatherDate, weatherLocation);
+					}
 				} catch (SQLException e) {
 					e.printStackTrace();
 					queryFailed = true;
 				}
 			}
 			
-			if (!queryFailed && reports != null){
+			if (!queryFailed){
 				String output = "";
 				output += Constants.RESPONSE_ROOT;
-				output = String.format(output, Constants.RESPONSE_REPORT_ROOT);
-				String allrecords = "";				
+				
+				// Do Report Processing
+				String allReports = "";				
 				for(Weather w : reports){
 					String tmpRecord = Constants.RESPONSE_WEATHER_REPORT;
 					tmpRecord = String.format(tmpRecord,
@@ -76,10 +92,42 @@ public class Parser {
 											   w.getWindDir(),											   
 											   w.getCloudCover(),
 											   w.getLocation());
-					allrecords += tmpRecord;
+					allReports += tmpRecord;
 					
 				}
-				return String.format(output,allrecords);
+				allReports = String.format(Constants.RESPONSE_REPORT_ROOT, allReports);
+				
+				// Do Forecast Processing
+				String allForecasts = "";
+				for(Forecast f : forecasts){
+					String tmpRecord = Constants.RESPONSE_WEATHER_FORECAST;
+					tmpRecord = String.format(tmpRecord,
+												f.getWeatherId(),
+											    f.getWeatherDate(),
+											    f.getTemp(),
+											    f.getWindSpeed(),
+											    f.getWindDir(),											   
+											    f.getCloudCover(),
+											    f.getLocation());
+					
+					allForecasts += tmpRecord;
+				}
+				allForecasts = String.format(Constants.RESPONSE_FORECAST_ROOT, allForecasts);
+				
+				// Do Energy processing
+				String allEnergy = "";
+				for(Energy e : energy){
+					String tmpRecord = Constants.RESPONSE_ENERGY_REPORT;
+					tmpRecord = String.format(tmpRecord,
+												e.getId(),
+												e.getDate(),
+												e.getPrice(),
+												e.getLocation());
+					allEnergy += allEnergy;
+				}
+				allEnergy = String.format(Constants.RESPONSE_ENERGY_ROOT, allEnergy);
+				
+				return String.format(output,allReports + allForecasts);
 				
 			}else{
 				return "Query Failure";
@@ -87,7 +135,7 @@ public class Parser {
 			
 		} else {
 			
-			return "Error";
+			return "Error null params";
 		}
 		
 		
