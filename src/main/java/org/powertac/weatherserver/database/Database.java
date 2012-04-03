@@ -174,6 +174,10 @@ public class Database {
 			beforeDate.shiftBackDay();
 			afterDate.shiftAheadDay();
 			
+			System.out.println("Procedural Implementation");
+			System.out.println("Dates: " + beforeDate.getLocaleString() + " " + weatherDate + " " + afterDate.getLocaleString());
+			
+			
 			List<Weather> rollingBefore = this.getWeatherList(beforeDate.getLocaleString(), weatherLocation);
 			List<Weather> rollingMiddle = this.getWeatherList(weatherDate, weatherLocation);
 			List<Weather> rollingAfter  = this.getWeatherList(afterDate.getLocaleString(), weatherLocation);
@@ -210,7 +214,9 @@ public class Database {
 					String newCloudCover = clampCloudCover( getCloudCoverValue(w.getCloudCover()) * tau0 );
 					tmpForecast.setCloudCover(newCloudCover);
 					
-					result.add(tmpForecast);		
+					result.add(tmpForecast);
+					
+					tau0 = tau0 * ((1.0/sigma - sigma)*Math.random() + sigma);
 				}
 			}
 			
