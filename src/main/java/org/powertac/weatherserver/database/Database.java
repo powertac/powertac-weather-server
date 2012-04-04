@@ -178,10 +178,17 @@ public class Database {
 			System.out.println("Dates: " + beforeDate.getLocaleString() + " " + weatherDate + " " + afterDate.getLocaleString());
 			
 			
-			List<Weather> rollingBefore = this.getWeatherList(beforeDate.getLocaleString(), weatherLocation);
+			List<Weather> rollingBefore = this.getWeatherList(beforeDate.getRestString(), weatherLocation);
 			List<Weather> rollingMiddle = this.getWeatherList(weatherDate, weatherLocation);
-			List<Weather> rollingAfter  = this.getWeatherList(afterDate.getLocaleString(), weatherLocation);
+			List<Weather> rollingAfter  = this.getWeatherList(afterDate.getRestString(), weatherLocation);
 			
+			System.out.println("Before Date: " + beforeDate.getRestString());
+			System.out.println("Middle Date: " + weatherDate);
+			System.out.println("After Date: " + afterDate.getRestString());
+
+			System.out.println("Rolling Before Size: " + rollingBefore.size());
+			System.out.println("Rolling Middle Size: " + rollingMiddle.size());
+			System.out.println("Rolling After Size: " + rollingAfter.size());
 			
 			Weather[] avgWeather = new Weather[rollingBefore.size()];
 			for (int i = 0; i < avgWeather.length ; i++){
@@ -190,22 +197,29 @@ public class Database {
 				tmpList.add(rollingMiddle.get(i));
 				tmpList.add(rollingAfter.get(i));
 				avgWeather[i] = avgReports(tmpList);
+				System.out.println("1: " + rollingBefore.get(i).getWindDir() + " 2: " + rollingMiddle.get(i).getWindDir() + " 3: " + rollingAfter.get(i).getWindDir());
+				System.out.println("Avg: " + avgWeather[i].getWindDir());
+				
+				
 			}
+			System.out.println("Avg Weather Length: " + avgWeather.length);
 			
 			List<Forecast> result = new ArrayList<Forecast>();
 			
 			Forecast tmpForecast;
+			DateString forecastDate = new DateString(weatherDate);
 			
 			for(int i=0; i<2; i++){
 				for(Weather w : avgWeather){
 					tmpForecast = new Forecast();
+					tmpForecast.setLocation(w.getLocation());
 					
-					tmpForecast.setWeatherDate(w.getWeatherDate());
+					tmpForecast.setWeatherDate(forecastDate.getLocaleString());
 					
 					Double newTemp = Double.parseDouble(w.getTemp()) * tau0;
 					tmpForecast.setTemp(newTemp.toString());
 					
-					Double newWindDir = Double.parseDouble((w.getWindDir().equalsIgnoreCase("***")?"0":w.getWindDir())) * tau0; 
+					Double newWindDir = (Double.parseDouble((w.getWindDir().equalsIgnoreCase("***")?"0":w.getWindDir())) * tau0)%360; 
 					tmpForecast.setWindDir(newWindDir.toString());
 					
 					Double newWindSpeed = Double.parseDouble((w.getWindSpeed().equalsIgnoreCase("***")?"0":w.getWindSpeed())) * tau0;
@@ -215,14 +229,15 @@ public class Database {
 					tmpForecast.setCloudCover(newCloudCover);
 					
 					result.add(tmpForecast);
+					//System.out.println("tau0: " + tau0 );
+					//System.out.println("Avg Temp: " + w.getTemp());
 					
 					tau0 = tau0 * ((1.0/sigma - sigma)*Math.random() + sigma);
+					forecastDate.shiftAheadHour();
 				}
 			}
 			
 			return result;
-			
-			
 		}else{
 			// TODO: Implement database query
 		}
@@ -237,28 +252,24 @@ public class Database {
 	
 	private Weather avgReports(List<Weather> weathers){
 		Weather tmpWeather = new Weather();
-		for (Weather w : weathers){
-			tmpWeather.setWeatherDate(w.getWeatherDate());			
+		Double newTemp = 0.0;
+		Double newWindDir = 0.0;
+		Double newWindSpeed = 0.0;
+		Double newCloudCover = 0.0;
+		
+		for (Weather w : weathers){		
 			tmpWeather.setLocation(w.getLocation());
 			
-			Double newTemp = Double.parseDouble(w.getTemp()) + Double.parseDouble(tmpWeather.getTemp());
-			tmpWeather.setTemp(newTemp.toString());
-			
-			Double newWindDir = Double.parseDouble((w.getWindDir().equalsIgnoreCase("***")?"0":w.getWindDir())) + 
-								Double.parseDouble((tmpWeather.getWindDir().equalsIgnoreCase("***")?"0":w.getWindDir()));
-			tmpWeather.setWindDir(newWindDir.toString());
-			
-			
-			
-			Double newWindSpeed = Double.parseDouble((w.getWindSpeed().equalsIgnoreCase("***")?"0":w.getWindSpeed())) + 
-								  Double.parseDouble((tmpWeather.getWindSpeed().equalsIgnoreCase("***")?"0":w.getWindSpeed()));
-			tmpWeather.setWindSpeed(newWindSpeed.toString());
-			
-			String newCloudCover = clampCloudCover( getCloudCoverValue(w.getCloudCover()) + getCloudCoverValue(tmpWeather.getCloudCover()));
-			tmpWeather.setCloudCover(newCloudCover);
-			
-			
+			newTemp += Double.parseDouble(w.getTemp());						
+			newWindDir += Double.parseDouble((w.getWindDir().equalsIgnoreCase("***")?"0":w.getWindDir()));						
+			newWindSpeed += Double.parseDouble((w.getWindSpeed().equalsIgnoreCase("***")?"0":w.getWindSpeed()));
+			newCloudCover += getCloudCoverValue(w.getCloudCover());
 		}
+		
+		tmpWeather.setTemp(String.valueOf(newTemp/weathers.size()));
+		tmpWeather.setWindDir(String.valueOf(newWindDir/weathers.size()));
+		tmpWeather.setWindSpeed(String.valueOf(newWindSpeed/weathers.size()));
+		tmpWeather.setCloudCover(clampCloudCover(newCloudCover/weathers.size()));
 		
 		return tmpWeather;
 		

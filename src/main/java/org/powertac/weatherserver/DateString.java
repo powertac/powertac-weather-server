@@ -23,7 +23,7 @@ public class DateString {
 		String dd = input.substring(2, 4);
 		String mm = input.substring(4, 6);
 		String yyyy = input.substring(6);
-		date.set(Integer.parseInt(yyyy), Integer.parseInt(mm),
+		date.set(Integer.parseInt(yyyy), Integer.parseInt(mm)-1,
 				Integer.parseInt(dd), Integer.parseInt(hh), 0);
 		String tmp = String.format("%s-%s-%s %s:%s:%s", yyyy, mm, dd, hh, "00",
 				"00");
@@ -56,20 +56,42 @@ public class DateString {
 	public void setLocaleString(String localeString) {
 		this.localeString = localeString;
 	}
+	
+	public String getRestString(){
+		String tmp = String.format("%02d%02d%02d%02d",
+				date.get(Calendar.HOUR_OF_DAY),
+				date.get(Calendar.DAY_OF_MONTH),
+				date.get(Calendar.MONTH)+1,
+				date.get(Calendar.YEAR));
+		return tmp;
+	}
 
 	public void shiftBackDay() {
 		date.set(Calendar.DAY_OF_YEAR, date.get(Calendar.DAY_OF_YEAR) - 1);
-		String tmp = String.format("%s-%s-%s %s:%s:%s",
-				date.get(Calendar.YEAR), date.get(Calendar.MONTH) + 1,
+		String tmp = String.format("%02d-%02d-%02d %02d:%s:%s",
+				date.get(Calendar.YEAR), 
+				date.get(Calendar.MONTH)+1,
 				date.get(Calendar.DAY_OF_MONTH),
 				date.get(Calendar.HOUR_OF_DAY), "00", "00");
 		this.setLocaleString(tmp);
+		
 	}
 
 	public void shiftAheadDay() {
 		date.set(Calendar.DAY_OF_YEAR, date.get(Calendar.DAY_OF_YEAR) + 1);
-		String tmp = String.format("%s-%s-%s %s:%s:%s",
-				date.get(Calendar.YEAR), date.get(Calendar.MONTH) + 1,
+		String tmp = String.format("%02d-%02d-%02d %02d:%s:%s",
+				date.get(Calendar.YEAR),
+				date.get(Calendar.MONTH)+1,
+				date.get(Calendar.DAY_OF_MONTH),
+				date.get(Calendar.HOUR_OF_DAY), "00", "00");
+		this.setLocaleString(tmp);
+	}
+	
+	public void shiftAheadHour() {
+		date.set(Calendar.HOUR_OF_DAY, date.get(Calendar.HOUR_OF_DAY) + 1);
+		String tmp = String.format("%02d-%02d-%02d %02d:%s:%s",
+				date.get(Calendar.YEAR), 
+				date.get(Calendar.MONTH)+1,
 				date.get(Calendar.DAY_OF_MONTH),
 				date.get(Calendar.HOUR_OF_DAY), "00", "00");
 		this.setLocaleString(tmp);

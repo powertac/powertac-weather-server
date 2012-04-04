@@ -9,6 +9,16 @@ public class Forecast {
 	private String cloudCover;
 	private String location;
 	
+	public Forecast(){
+		weatherId = "0";
+		weatherDate = "0000000000";
+		temp = "0";
+		windDir = "0";
+		windSpeed = "0";
+		cloudCover = "CLR";
+		location = "NONE";
+	}
+	
 	public String getWeatherId() {
 		return weatherId;
 	}

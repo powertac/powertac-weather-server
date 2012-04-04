@@ -115,8 +115,8 @@ public class Parser {
 				allForecasts = String.format(Constants.RESPONSE_FORECAST_ROOT, allForecasts);
 				
 				// Do Energy processing
-				/*
-				String allEnergy = "";
+				
+				String allEnergy = "";/*
 				for(Energy e : energy){
 					String tmpRecord = Constants.RESPONSE_ENERGY_REPORT;
 					tmpRecord = String.format(tmpRecord,
@@ -125,10 +125,10 @@ public class Parser {
 												e.getPrice(),
 												e.getLocation());
 					allEnergy += allEnergy;
-				}
-				allEnergy = String.format(Constants.RESPONSE_ENERGY_ROOT, allEnergy);*/
+				}*/
+				allEnergy = String.format(Constants.RESPONSE_ENERGY_ROOT, "");
 				
-				return String.format(output,allReports + allForecasts);
+				return String.format(output,allReports + allForecasts + allEnergy);
 				
 			}else{
 				return "Query Failure";
