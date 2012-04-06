@@ -174,21 +174,21 @@ public class Database {
 			beforeDate.shiftBackDay();
 			afterDate.shiftAheadDay();
 			
-			System.out.println("Procedural Implementation");
-			System.out.println("Dates: " + beforeDate.getLocaleString() + " " + weatherDate + " " + afterDate.getLocaleString());
+			//System.out.println("Procedural Implementation");
+			//System.out.println("Dates: " + beforeDate.getLocaleString() + " " + weatherDate + " " + afterDate.getLocaleString());
 			
 			
 			List<Weather> rollingBefore = this.getWeatherList(beforeDate.getRestString(), weatherLocation);
 			List<Weather> rollingMiddle = this.getWeatherList(weatherDate, weatherLocation);
 			List<Weather> rollingAfter  = this.getWeatherList(afterDate.getRestString(), weatherLocation);
 			
-			System.out.println("Before Date: " + beforeDate.getRestString());
-			System.out.println("Middle Date: " + weatherDate);
-			System.out.println("After Date: " + afterDate.getRestString());
+			//System.out.println("Before Date: " + beforeDate.getRestString());
+			//System.out.println("Middle Date: " + weatherDate);
+			//System.out.println("After Date: " + afterDate.getRestString());
 
-			System.out.println("Rolling Before Size: " + rollingBefore.size());
-			System.out.println("Rolling Middle Size: " + rollingMiddle.size());
-			System.out.println("Rolling After Size: " + rollingAfter.size());
+			//System.out.println("Rolling Before Size: " + rollingBefore.size());
+			//System.out.println("Rolling Middle Size: " + rollingMiddle.size());
+			//System.out.println("Rolling After Size: " + rollingAfter.size());
 			
 			Weather[] avgWeather = new Weather[rollingBefore.size()];
 			for (int i = 0; i < avgWeather.length ; i++){
@@ -202,7 +202,7 @@ public class Database {
 				
 				
 			}
-			System.out.println("Avg Weather Length: " + avgWeather.length);
+			//System.out.println("Avg Weather Length: " + avgWeather.length);
 			
 			List<Forecast> result = new ArrayList<Forecast>();
 			
