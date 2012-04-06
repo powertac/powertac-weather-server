@@ -44,7 +44,7 @@ public class Parser {
 			if(weatherDateArray != null){
 				dateSpecified = true;
 				weatherDate = weatherDateArray[0];
-				System.out.println("weatherDate");
+				//System.out.println("weatherDate");
 			}
 			
 			if(!dateSpecified && weatherIdArray != null){
