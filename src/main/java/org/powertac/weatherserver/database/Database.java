@@ -213,10 +213,11 @@ public class Database {
 			
 			Forecast tmpForecast;
 			DateString forecastDate = new DateString(weatherDate);
-			
+			int forecastId=0;
 			for(int i=0; i<2; i++){
 				for(Weather w : avgWeather){
 					tmpForecast = new Forecast();
+					tmpForecast.setWeatherId(String.valueOf(forecastId++));
 					tmpForecast.setLocation(w.getLocation());
 					
 					tmpForecast.setWeatherDate(forecastDate.getLocaleString());
@@ -244,7 +245,7 @@ public class Database {
 			
 			return result;
 		}else{
-			// TODO: Implement database query
+			// TODO: Implement database query for empirical data
 		}
 		
 		return null;
