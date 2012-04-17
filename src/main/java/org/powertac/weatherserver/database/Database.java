@@ -128,7 +128,7 @@ public class Database {
 			return new ArrayList<Weather>();
 		}
 		
-		if (weatherStatement == null) {
+		if (weatherStatement == null || weatherStatement.isClosed()) {
 			weatherStatement = conn.prepareStatement(String.format(Constants.DB_SELECT_REPORT,this.reportTable));
 		}
 
