@@ -266,10 +266,10 @@ public class Database {
 		for (Weather w : weathers){		
 			tmpWeather.setLocation(w.getLocation());
 			
-			newTemp += Double.parseDouble(w.getTemp());						
-			newWindDir += Double.parseDouble((w.getWindDir().equalsIgnoreCase("***")?"0":w.getWindDir()));						
-			newWindSpeed += Double.parseDouble((w.getWindSpeed().equalsIgnoreCase("***")?"0":w.getWindSpeed()));
-			newCloudCover += getCloudCoverValue(w.getCloudCover().equalsIgnoreCase("***")?"0":w.getCloudCover());
+			newTemp += Double.parseDouble((w.getTemp().indexOf("***")!=-1?"0":w.getTemp()));						
+			newWindDir += Double.parseDouble((w.getWindDir().indexOf("***")!=-1?"0":w.getWindDir()));						
+			newWindSpeed += Double.parseDouble((w.getWindSpeed().indexOf("***")!=-1?"0":w.getWindSpeed()));
+			newCloudCover += getCloudCoverValue(w.getCloudCover().indexOf("***")!=-1?"0":w.getCloudCover());
 		}
 		
 		tmpWeather.setTemp(String.valueOf(newTemp/weathers.size()));
