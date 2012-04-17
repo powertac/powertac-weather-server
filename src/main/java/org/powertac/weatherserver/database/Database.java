@@ -269,7 +269,7 @@ public class Database {
 			newTemp += Double.parseDouble(w.getTemp());						
 			newWindDir += Double.parseDouble((w.getWindDir().equalsIgnoreCase("***")?"0":w.getWindDir()));						
 			newWindSpeed += Double.parseDouble((w.getWindSpeed().equalsIgnoreCase("***")?"0":w.getWindSpeed()));
-			newCloudCover += getCloudCoverValue(w.getCloudCover());
+			newCloudCover += getCloudCoverValue(w.getCloudCover().equalsIgnoreCase("***")?"0":w.getCloudCover());
 		}
 		
 		tmpWeather.setTemp(String.valueOf(newTemp/weathers.size()));
