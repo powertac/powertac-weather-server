@@ -93,25 +93,30 @@ public class Database {
 	}
 
 	private void checkDb() {
-		if (conn == null) {
-			System.out.println("Connection is null");
-			if (this.dbms.equalsIgnoreCase("mysql")) {
-				System.out.println("Using mysql as dbms ...");
-				try {
-					connectionProps.setProperty("user", this.username);
-					connectionProps.setProperty("password", this.password);
-					Class.forName ("com.mysql.jdbc.Driver").newInstance();
-					conn = DriverManager.getConnection("jdbc:" + this.dbms
-							+ "://" + this.dbUrl +  "/" + this.database,
-							connectionProps);
-					System.out.println("Connected Successfully");
-				} catch (Exception e) {
-					System.out.println("Connection Error");
-					e.printStackTrace();
+		try {
+			if (conn == null || conn.isClosed()) {
+				System.out.println("Connection is null");
+				if (this.dbms.equalsIgnoreCase("mysql")) {
+					System.out.println("Using mysql as dbms ...");
+					try {
+						connectionProps.setProperty("user", this.username);
+						connectionProps.setProperty("password", this.password);
+						Class.forName ("com.mysql.jdbc.Driver").newInstance();
+						conn = DriverManager.getConnection("jdbc:" + this.dbms
+								+ "://" + this.dbUrl +  "/" + this.database,
+								connectionProps);
+						System.out.println("Connected Successfully");
+					} catch (Exception e) {
+						System.out.println("Connection Error");
+						e.printStackTrace();
+					}
 				}
+			}else{
+				System.out.println("Connection is good");
 			}
-		}else{
-			System.out.println("Connection is good");
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
 		}
 	}
 
