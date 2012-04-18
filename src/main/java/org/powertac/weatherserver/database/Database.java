@@ -131,7 +131,9 @@ public class Database {
 		if (weatherStatement == null || weatherStatement.isClosed()) {
 			weatherStatement = conn.prepareStatement(String.format(Constants.DB_SELECT_REPORT,this.reportTable));
 		}
-
+		
+		System.out.println("Date String: " + startDate + " is valid? " + this.validDate(startDate));
+		System.out.println("Sql Date: " + startDate + " is " + new DateString(startDate).getLocaleString());
 		// Check to make sure they are requesting public data
 		if (this.getLocations().contains(location) && this.validDate(startDate)){
 			System.out.println("Datestring: " + startDate);
@@ -202,8 +204,8 @@ public class Database {
 				tmpList.add(rollingMiddle.get(i));
 				tmpList.add(rollingAfter.get(i));
 				avgWeather[i] = avgReports(tmpList);
-				System.out.println("1: " + rollingBefore.get(i).getWindDir() + " 2: " + rollingMiddle.get(i).getWindDir() + " 3: " + rollingAfter.get(i).getWindDir());
-				System.out.println("Avg: " + avgWeather[i].getWindDir());
+				//System.out.println("1: " + rollingBefore.get(i).getWindDir() + " 2: " + rollingMiddle.get(i).getWindDir() + " 3: " + rollingAfter.get(i).getWindDir());
+				//System.out.println("Avg: " + avgWeather[i].getWindDir());
 				
 				
 			}

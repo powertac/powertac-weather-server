@@ -70,6 +70,14 @@ public class DateStringTest {
 				"2012-02-02 00:00:00", localeStringGreater);
 
 	}
+	@Test
+	public void outlierCaseTest(){
+		String testString = "2310102009";
+		System.out.println("Outlier");
+		DateString dsOut = new DateString(testString);
+		assertEquals("Covnersion between Rest String to Locale String failed","2009-10-10 23:00:00",dsOut.getLocaleString());
+		
+	}
 
 	@Test
 	public void shiftDatesTest() {

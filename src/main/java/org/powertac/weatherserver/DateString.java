@@ -14,10 +14,10 @@ public class DateString {
 
 		// Check if dates are integers
 		try {
-			int integerInput = Integer.parseInt(input);
+			long integerInput = Long.parseLong(input);
 
 			// Check if dates are 10 characters long
-			int result;
+			int result = 0;
 			if ((result = 10 - input.length()) == 0) {
 				update(input);
 			} else {
@@ -29,12 +29,15 @@ public class DateString {
 			}
 		} catch (NumberFormatException e) {
 			// If there is an error parsing the integer update with zero date
+			//e.printStackTrace();
+			
 			update("0000000000");
 
 		}
 	}
 
 	private void update(String input) {
+		System.out.println("Input String: " + input);
 		String hh = input.substring(0, 2);
 		String dd = input.substring(2, 4);
 		String mm = input.substring(4, 6);
