@@ -132,12 +132,17 @@ public class Database {
 			weatherStatement = conn.prepareStatement(String.format(Constants.DB_SELECT_REPORT,this.reportTable));
 		}
 		
-		System.out.println("Date String: " + startDate + " is valid? " + this.validDate(startDate));
-		System.out.println("Sql Date: " + startDate + " is " + new DateString(startDate).getLocaleString());
+		//System.out.println("Date String: " + startDate + " is valid? " + this.validDate(startDate));
+		//System.out.println("Sql Date: " + startDate + " is " + new DateString(startDate).getLocaleString());
+		if (!this.validDate(startDate)){
+			System.out.println("Date "+ startDate +" not available");
+			startDate = this.makeValidDate(startDate);
+			System.out.println("Querying from " + startDate + " instead");
+		}
 		// Check to make sure they are requesting public data
 		if (this.getLocations().contains(location) && this.validDate(startDate)){
-			System.out.println("Datestring: " + startDate);
-			System.out.println("Sql Date: " + new DateString(startDate).getLocaleString());
+			//System.out.println("Datestring: " + startDate);
+			//System.out.println("Sql Date: " + new DateString(startDate).getLocaleString());
 			//weatherStatement.setDate(1, (new DateString(startDate)).getSqlDate());
 			weatherStatement.setString(1, new DateString(startDate).getLocaleString());
 			weatherStatement.setString(2, location);
@@ -433,6 +438,21 @@ public class Database {
 		Date testDate = new DateString(date).getSqlDate();
 		
 		return (testDate.before(sqlDatemax) && testDate.after(sqlDatemin));
+		
+	}
+	
+	public String makeValidDate(String date){
+		Date sqlDatemin = new DateString(this.getDatemin()).getSqlDate();
+		Date sqlDatemax = new DateString(this.getDatemax()).getSqlDate();
+		Date testDate = new DateString(date).getSqlDate();
+		
+		if(testDate.before(sqlDatemin)){
+			return date.substring(0,5) + this.getDatemin().substring(5,10);
+		}else if(testDate.after(sqlDatemax)){
+			return date.substring(0,5) + this.getDatemax().substring(5,10);
+		}else{
+			return date;
+		}
 		
 	}
 
