@@ -159,7 +159,7 @@ public class Database {
 				w.setWeatherId(result.getString("weatherId"));
 				w.setWeatherDate(result.getString("weatherDate"));
 				w.setTemp(result.getString("temp").contains("**")?"0":String.valueOf((result.getDouble("temp")-32.0d)* 5.0d/9.0d));
-				w.setWindDir(result.getString("windDir").contains("**")?"0":result.getString("windDir"));
+				w.setWindDir(String.valueOf(result.getString("windDir").contains("**")?"0":result.getDouble("windDir")>=360?0:result.getDouble("windDir")));
 				w.setWindSpeed(result.getString("windSpeed").contains("**")?"0":String.valueOf(result.getDouble("windSpeed")*fromMpsToMs));
 				w.setCloudCover(result.getString("cloudCover").contains("**")?"CLR":result.getString("cloudCover"));
 				w.setLocation(result.getString("location"));
