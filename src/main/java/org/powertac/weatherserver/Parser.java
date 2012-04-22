@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.Map;
 
 import javax.faces.bean.ManagedBean;
+import javax.faces.bean.RequestScoped;
 import javax.faces.context.FacesContext;
 
 import org.powertac.weatherserver.beans.Energy;
@@ -14,6 +15,7 @@ import org.powertac.weatherserver.constants.Constants;
 import org.powertac.weatherserver.database.Database;
 
 @ManagedBean
+@RequestScoped
 public class Parser {
 	
 	public static String parseRestRequest(Map<?, ?> params){
@@ -57,7 +59,7 @@ public class Parser {
 			List<Energy> energy = null;
 			
 			if (weatherDate != null && weatherLocation != null){
-				Database db = (Database) FacesContext.getCurrentInstance().getExternalContext().getApplicationMap().get("database");
+				Database db = new Database();//(Database) FacesContext.getCurrentInstance().getExternalContext().getApplicationMap().get("database");
 				try {
 					if(responseType.equalsIgnoreCase("all")){
 						reports = db.getWeatherList(weatherDate, weatherLocation);

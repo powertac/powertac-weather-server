@@ -12,7 +12,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Properties;
 
-import javax.faces.bean.ApplicationScoped;
+import javax.faces.bean.RequestScoped;
 import javax.faces.bean.ManagedBean;
 
 import org.powertac.weatherserver.DateString;
@@ -21,8 +21,8 @@ import org.powertac.weatherserver.beans.Forecast;
 import org.powertac.weatherserver.beans.Weather;
 import org.powertac.weatherserver.constants.Constants;
 
-@ManagedBean(eager = true)
-@ApplicationScoped
+@ManagedBean
+@RequestScoped
 public class Database {
 
 	// Conversions parms
@@ -165,7 +165,7 @@ public class Database {
 				w.setLocation(result.getString("location"));
 				list.add(w);
 			}
-			
+			conn.close();
 			return list;
 		}else{
 			return new ArrayList<Weather>();
