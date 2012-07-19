@@ -153,17 +153,25 @@ public class Database {
 			ResultSet result = weatherStatement.executeQuery();
 	
 			List<Weather> list = new ArrayList<Weather>();
-			
+			Weather lastWeather = new Weather();
+			lastWeather.setWeatherId(String.valueOf(-1));
+			lastWeather.setWeatherDate(String.valueOf("null"));
+			lastWeather.setTemp("0.0");
+			lastWeather.setWindDir("0");
+			lastWeather.setWindSpeed("0");
+			lastWeather.setCloudCover("CLR");
+			lastWeather.setLocation("minneapolis");
 			while(result.next()){
 				Weather w = new Weather();
 				w.setWeatherId(result.getString("weatherId"));
 				w.setWeatherDate(result.getString("weatherDate"));
-				w.setTemp(result.getString("temp").contains("**")?"0":String.valueOf((result.getDouble("temp")-32.0d)* 5.0d/9.0d));
-				w.setWindDir(String.valueOf(result.getString("windDir").contains("**")?"0":result.getDouble("windDir")>=360?0:result.getDouble("windDir")));
-				w.setWindSpeed(result.getString("windSpeed").contains("**")?"0":String.valueOf(result.getDouble("windSpeed")*fromMpsToMs));
-				w.setCloudCover(result.getString("cloudCover").contains("**")?"CLR":result.getString("cloudCover"));
+				w.setTemp(result.getString("temp").contains("**")?lastWeather.getTemp():String.valueOf((result.getDouble("temp")-32.0d)* 5.0d/9.0d));
+				w.setWindDir(String.valueOf(result.getString("windDir").contains("**")?lastWeather.getWindDir():result.getDouble("windDir")>=360?0:result.getDouble("windDir")));
+				w.setWindSpeed(result.getString("windSpeed").contains("**")?lastWeather.getWindSpeed():String.valueOf(result.getDouble("windSpeed")*fromMpsToMs));
+				w.setCloudCover(result.getString("cloudCover").contains("**")?lastWeather.getCloudCover():result.getString("cloudCover"));
 				w.setLocation(result.getString("location"));
 				list.add(w);
+				lastWeather = w;
 			}
 			conn.close();
 			return list;
