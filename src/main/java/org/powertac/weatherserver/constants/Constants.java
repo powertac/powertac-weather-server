@@ -22,6 +22,4 @@ public class Constants {
 	public static final String DB_SELECT_REPORT = "SELECT weatherId, weatherDate, temp, windSpeed, windDir,cloudCover, location FROM %s WHERE weatherDate>=? AND location=? LIMIT 24";
 	public static final String DB_SELECT_FORECAST = "SELECT weatherId, weatherDate, temp, windSpeed, windDir,cloudCover FROM %s WHERE weatherDate>=? AND location=? LIMIT 24";
 	public static final String DB_SELECT_ENERGY = "SELECT energyId, energyDate, price, FROM %s WHERE energyId=? OR energyDate=? AND location=? LIMIT 24";
-	
-
 }

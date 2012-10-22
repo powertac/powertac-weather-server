@@ -1,25 +1,19 @@
 package org.powertac.weatherserver.database;
 
-import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.sql.Connection;
-import java.sql.Date;
-import java.sql.DriverManager;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Properties;
-
-import javax.faces.bean.RequestScoped;
-import javax.faces.bean.ManagedBean;
-
 import org.powertac.weatherserver.DateString;
 import org.powertac.weatherserver.beans.Energy;
 import org.powertac.weatherserver.beans.Forecast;
 import org.powertac.weatherserver.beans.Weather;
 import org.powertac.weatherserver.constants.Constants;
+
+import javax.faces.bean.ManagedBean;
+import javax.faces.bean.RequestScoped;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.sql.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Properties;
 
 @ManagedBean
 @RequestScoped
@@ -54,42 +48,39 @@ public class Database {
 	// Database Configurations
 	private Connection conn = null;
 	private PreparedStatement weatherStatement = null;
-	private PreparedStatement forecastStatement = null;
-	private PreparedStatement energyStatement = null;
 	Properties connectionProps = new Properties();
 	Properties prop = new Properties();
 
-	
-	
 	public Database() {
 		locations = new ArrayList<String>();
 		try {
 			prop.load(Database.class.getClassLoader().getResourceAsStream(
 					"/weatherserver.properties"));
-			System.out.println(prop);
+			//System.out.println(prop);
 			// Database Connection related properties
-			this.setDatabase(prop.getProperty("db.database"));
-			this.setDbms(prop.getProperty("db.dbms"));
-			this.setPort(prop.getProperty("db.port"));
-			this.setDbUrl(prop.getProperty("db.dbUrl"));
-			this.setUsername(prop.getProperty("db.username"));
-			this.setPassword(prop.getProperty("db.password"));
+			setDatabase(prop.getProperty("db.database"));
+			setDbms(prop.getProperty("db.dbms"));
+			setPort(prop.getProperty("db.port"));
+			setDbUrl(prop.getProperty("db.dbUrl"));
+			setUsername(prop.getProperty("db.username"));
+			setPassword(prop.getProperty("db.password"));
 
 			// Configuration Related properties
-			this.setDatemin(prop.getProperty("publicDateMin"));
-			this.setDatemax(prop.getProperty("publicDateMax"));
-			this.setLocations(prop.getProperty("publicLocations"));
+			setDatemin(prop.getProperty("publicDateMin"));
+			setDatemax(prop.getProperty("publicDateMax"));
+			setLocations(prop.getProperty("publicLocations"));
 			
-			this.setImplementation(prop.getProperty("implementation"));
-			this.setReportTable(prop.getProperty("reportTable"));
-			this.setForecastTable(prop.getProperty("forecastTable"));
-			this.setEnergyTable(prop.getProperty("energyTable"));
-			System.out.println("Successfully instantiated Database bean!");
-
-		} catch (FileNotFoundException e) {
+			setImplementation(prop.getProperty("implementation"));
+			setReportTable(prop.getProperty("reportTable"));
+			setForecastTable(prop.getProperty("forecastTable"));
+			setEnergyTable(prop.getProperty("energyTable"));
+			//System.out.println("Successfully instantiated Database bean!");
+		}
+    catch (FileNotFoundException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
-		} catch (IOException e) {
+		}
+    catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
@@ -98,24 +89,25 @@ public class Database {
 	private void checkDb() {
 		try {
 			if (conn == null || conn.isClosed()) {
-				System.out.println("Connection is null");
-				if (this.dbms.equalsIgnoreCase("mysql")) {
-					System.out.println("Using mysql as dbms ...");
+				//System.out.println("Connection is null");
+				if (dbms.equalsIgnoreCase("mysql")) {
+					//System.out.println("Using mysql as dbms ...");
 					try {
-						connectionProps.setProperty("user", this.username);
-						connectionProps.setProperty("password", this.password);
+						connectionProps.setProperty("user", username);
+						connectionProps.setProperty("password", password);
 						Class.forName ("com.mysql.jdbc.Driver").newInstance();
-						conn = DriverManager.getConnection("jdbc:" + this.dbms
-								+ "://" + this.dbUrl +  "/" + this.database,
+						conn = DriverManager.getConnection("jdbc:" + dbms
+								+ "://" + dbUrl +  "/" + database,
 								connectionProps);
-						System.out.println("Connected Successfully");
+						//System.out.println("Connected Successfully");
 					} catch (Exception e) {
-						System.out.println("Connection Error");
+						//System.out.println("Connection Error");
 						e.printStackTrace();
 					}
 				}
-			}else{
-				System.out.println("Connection is good");
+			}
+      else {
+				//System.out.println("Connection is good");
 			}
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
@@ -132,18 +124,19 @@ public class Database {
 		}
 		
 		if (weatherStatement == null || weatherStatement.isClosed()) {
-			weatherStatement = conn.prepareStatement(String.format(Constants.DB_SELECT_REPORT,this.reportTable));
+			weatherStatement = conn.prepareStatement(
+          String.format(Constants.DB_SELECT_REPORT, reportTable));
 		}
 		
-		//System.out.println("Date String: " + startDate + " is valid? " + this.validDate(startDate));
+		//System.out.println("Date String: " + startDate + " is valid? " + validDate(startDate));
 		//System.out.println("Sql Date: " + startDate + " is " + new DateString(startDate).getLocaleString());
-		if (!this.validDate(startDate)){
-			System.out.println("Date "+ startDate +" not available");
-			startDate = this.makeValidDate(startDate);
-			System.out.println("Querying from " + startDate + " instead");
+		if (!validDate(startDate)){
+			//System.out.println("Date "+ startDate +" not available");
+			startDate = makeValidDate(startDate);
+			//System.out.println("Querying from " + startDate + " instead");
 		}
 		// Check to make sure they are requesting public data
-		if (this.getLocations().contains(location) && this.validDate(startDate)){
+		if (getLocations().contains(location) && validDate(startDate)){
 			//System.out.println("Datestring: " + startDate);
 			//System.out.println("Sql Date: " + new DateString(startDate).getLocaleString());
 			//weatherStatement.setDate(1, (new DateString(startDate)).getSqlDate());
@@ -156,11 +149,8 @@ public class Database {
 			Weather lastWeather = new Weather();
 			lastWeather.setWeatherId(String.valueOf(-1));
 			lastWeather.setWeatherDate(String.valueOf("null"));
-			lastWeather.setTemp("0.0");
-			lastWeather.setWindDir("0");
-			lastWeather.setWindSpeed("0");
-			lastWeather.setCloudCover("CLR");
 			lastWeather.setLocation("minneapolis");
+
 			while(result.next()){
 				Weather w = new Weather();
 				w.setWeatherId(result.getString("weatherId"));
@@ -175,19 +165,19 @@ public class Database {
 			}
 			conn.close();
 			return list;
-		}else{
+		}
+    else {
 			return new ArrayList<Weather>();
 		}
-		
-		
-
 	}
 
-	public List<Forecast> getForecastList(String weatherDate, String weatherLocation) throws SQLException {
+	public List<Forecast> getForecastList(String weatherDate, String weatherLocation)
+      throws SQLException
+  {
 		checkDb();
 		
 		// Procedural implementation does a trend based random walk
-		if(implementation.equals("procedural")){
+		if (implementation.equals("procedural")) {
 			double tau0 = Double.parseDouble(prop.getProperty("tau0"));
 			double sigma = Double.parseDouble(prop.getProperty("sigma"));
 			
@@ -200,10 +190,9 @@ public class Database {
 			//System.out.println("Procedural Implementation");
 			//System.out.println("Dates: " + beforeDate.getLocaleString() + " " + weatherDate + " " + afterDate.getLocaleString());
 			
-			
-			List<Weather> rollingBefore = this.getWeatherList(beforeDate.getRestString(), weatherLocation);
-			List<Weather> rollingMiddle = this.getWeatherList(weatherDate, weatherLocation);
-			List<Weather> rollingAfter  = this.getWeatherList(afterDate.getRestString(), weatherLocation);
+			List<Weather> rollingBefore = getWeatherList(beforeDate.getRestString(), weatherLocation);
+			List<Weather> rollingMiddle = getWeatherList(weatherDate, weatherLocation);
+			List<Weather> rollingAfter  = getWeatherList(afterDate.getRestString(), weatherLocation);
 			
 			//System.out.println("Before Date: " + beforeDate.getRestString());
 			//System.out.println("Middle Date: " + weatherDate);
@@ -214,7 +203,7 @@ public class Database {
 			//System.out.println("Rolling After Size: " + rollingAfter.size());
 			
 			Weather[] avgWeather = new Weather[rollingBefore.size()];
-			for (int i = 0; i < avgWeather.length ; i++){
+			for (int i = 0; i < avgWeather.length ; i++) {
 				List<Weather> tmpList = new ArrayList<Weather>();
 				tmpList.add(rollingBefore.get(i));
 				tmpList.add(rollingMiddle.get(i));
@@ -222,8 +211,6 @@ public class Database {
 				avgWeather[i] = avgReports(tmpList);
 				//System.out.println("1: " + rollingBefore.get(i).getWindDir() + " 2: " + rollingMiddle.get(i).getWindDir() + " 3: " + rollingAfter.get(i).getWindDir());
 				//System.out.println("Avg: " + avgWeather[i].getWindDir());
-				
-				
 			}
 			//System.out.println("Avg Weather Length: " + avgWeather.length);
 			
@@ -232,8 +219,8 @@ public class Database {
 			Forecast tmpForecast;
 			DateString forecastDate = new DateString(weatherDate);
 			int forecastId=0;
-			for(int i=0; i<2; i++){
-				for(Weather w : avgWeather){
+			for (int i=0; i<2; i++) {
+				for (Weather w : avgWeather) {
 					tmpForecast = new Forecast();
 					tmpForecast.setWeatherId(String.valueOf(forecastId++));
 					tmpForecast.setLocation(w.getLocation());
@@ -262,32 +249,35 @@ public class Database {
 			}
 			
 			return result;
-		}else{
+		}
+    else {
 			// TODO: Implement database query for empirical data
 		}
 		
 		return null;
 	}
 
-	public List<Energy> getEnergyList(String weatherDate, String weatherLocation) {
+	public List<Energy> getEnergyList (String weatherDate, String weatherLocation)
+  {
 		checkDb();
 		return null;
 	}
 	
-	private Weather avgReports(List<Weather> weathers){
+	private Weather avgReports (List<Weather> weathers)
+  {
 		Weather tmpWeather = new Weather();
 		Double newTemp = 0.0;
 		Double newWindDir = 0.0;
 		Double newWindSpeed = 0.0;
 		Double newCloudCover = 0.0;
 		
-		for (Weather w : weathers){		
+		for (Weather w : weathers) {
 			tmpWeather.setLocation(w.getLocation());
 			
-			newTemp += Double.parseDouble((w.getTemp().indexOf("***")!=-1?"0":w.getTemp()));						
-			newWindDir += Double.parseDouble((w.getWindDir().indexOf("***")!=-1?"0":w.getWindDir()));						
-			newWindSpeed += Double.parseDouble((w.getWindSpeed().indexOf("***")!=-1?"0":w.getWindSpeed()));
-			newCloudCover += getCloudCoverValue(w.getCloudCover().indexOf("***")!=-1?"0":w.getCloudCover());
+			newTemp += Double.parseDouble((w.getTemp().contains("***") ? "0" : w.getTemp()));
+			newWindDir += Double.parseDouble((w.getWindDir().contains("***") ? "0" : w.getWindDir()));
+			newWindSpeed += Double.parseDouble((w.getWindSpeed().contains("***") ? "0" : w.getWindSpeed()));
+			newCloudCover += getCloudCoverValue(w.getCloudCover().contains("***") ? "0" : w.getCloudCover());
 		}
 		
 		tmpWeather.setTemp(String.valueOf(newTemp/weathers.size()));
@@ -296,183 +286,178 @@ public class Database {
 		tmpWeather.setCloudCover(clampCloudCover(newCloudCover/weathers.size()));
 		
 		return tmpWeather;
-		
 	}
 	
-	private double getCloudCoverValue(String s){
-		if(s.equalsIgnoreCase("clr")){
+	private double getCloudCoverValue (String s)
+  {
+		if (s.equalsIgnoreCase("clr")) {
 			return 0.0;
-		}else if (s.equalsIgnoreCase("sct")){
+		}
+    else if (s.equalsIgnoreCase("sct")) {
 			return 3.0/8.0;
-		}else if (s.equalsIgnoreCase("bkn")){
+		}
+    else if (s.equalsIgnoreCase("bkn")) {
 			return 6.0/8.0;
-		}else if (s.equalsIgnoreCase("ovc")){
-			return 1.0;
-		}else if (s.equalsIgnoreCase("obs")){
-			return 1.0;
-		}else{
+		}
+    else if (s.equalsIgnoreCase("ovc")) {
 			return 1.0;
 		}
-		
+    else if (s.equalsIgnoreCase("obs")) {
+			return 1.0;
+		}
+    else {
+			return 1.0;
+		}
 	}
 	
-	private String clampCloudCover(Double value){
-		if(value < 1.0/8.0){
+	private String clampCloudCover (Double value)
+  {
+		if (value < 1.0/8.0) {
 			return "CLR";
-		}else if (value < 4.0/8.0){
+		}
+    else if (value < 4.0/8.0) {
 			return "SCT";
-		}else if (value < 7.0/8.0){
+		}
+    else if (value < 7.0/8.0) {
 			return "BKN";
-		}else{
+		}
+    else {
 			return "OVC";
 		}
 	}
 
-	public String getDate() {
-		return date;
-	}
-
-	public void setDate(String date) {
-		this.date = date;
-	}
-
-	public String getId() {
-		return id;
-	}
-
-	public void setId(String id) {
-		this.id = id;
-	}
-
-	public String getDatabase() {
-		return database;
-	}
-
-	public void setDatabase(String database) {
-		this.database = database;
-	}
-
-	public String getPort() {
-		return port;
-	}
-
-	public void setPort(String port) {
-		this.port = port;
-	}
-
-	public String getUsername() {
-		return username;
-	}
-
-	public void setUsername(String username) {
-		this.username = username;
-	}
-
-	public String getPassword() {
-		return password;
-	}
-
-	public void setPassword(String password) {
-		this.password = password;
-	}
-
-	public String getDbUrl() {
-		return dbUrl;
-	}
-
-	public void setDbUrl(String dbUrl) {
-		this.dbUrl = dbUrl;
-	}
-
-	public String getDbms() {
-		return dbms;
-	}
-
-	public void setDbms(String dbms) {
-		this.dbms = dbms;
-	}
-
-	public String getDatemin() {
-		return datemin;
-	}
-
-	public void setDatemin(String datemin) {
-		this.datemin = datemin;
-	}
-
-	public String getDatemax() {
-		return datemax;
-	}
-
-	public void setDatemax(String datemax) {
-		this.datemax = datemax;
-	}
-
-	public String getReportTable() {
-		return reportTable;
-	}
-
-	public void setReportTable(String reportTable) {
-		this.reportTable = reportTable;
-	}
-
-	public String getForecastTable() {
-		return forecastTable;
-	}
-
-	public void setForecastTable(String forecastTable) {
-		this.forecastTable = forecastTable;
-	}
-
-	public String getEnergyTable() {
-		return energyTable;
-	}
-
-	public void setEnergyTable(String energyTable) {
-		this.energyTable = energyTable;
-	}
-
-	public List<String> getLocations() {
-		return locations;
-	}
-
-	public void setLocations(String locations) {
-		for(String s :locations.split(",")){
-			this.locations.add(s.trim());
-		}
-		
-	}
-	
-	public boolean validDate(String date){
-		Date sqlDatemin = new DateString(this.getDatemin()).getSqlDate();
-		Date sqlDatemax = new DateString(this.getDatemax()).getSqlDate();
+	public boolean validDate (String date)
+  {
+		Date sqlDatemin = new DateString(getDatemin()).getSqlDate();
+		Date sqlDatemax = new DateString(getDatemax()).getSqlDate();
 		Date testDate = new DateString(date).getSqlDate();
 		
 		return (testDate.before(sqlDatemax) && testDate.after(sqlDatemin));
-		
 	}
 	
-	public String makeValidDate(String date){
-		Date sqlDatemin = new DateString(this.getDatemin()).getSqlDate();
-		Date sqlDatemax = new DateString(this.getDatemax()).getSqlDate();
+	public String makeValidDate (String date)
+  {
+		Date sqlDatemin = new DateString(getDatemin()).getSqlDate();
+		Date sqlDatemax = new DateString(getDatemax()).getSqlDate();
 		Date testDate = new DateString(date).getSqlDate();
 		
-		if(testDate.before(sqlDatemin)){
-			return date.substring(0,5) + this.getDatemin().substring(5,10);
-		}else if(testDate.after(sqlDatemax)){
-			return date.substring(0,5) + this.getDatemax().substring(5,10);
-		}else{
+		if (testDate.before(sqlDatemin)) {
+			return date.substring(0,5) + getDatemin().substring(5,10);
+		}
+    else if (testDate.after(sqlDatemax)) {
+			return date.substring(0,5) + getDatemax().substring(5,10);
+		}
+    else {
 			return date;
 		}
-		
 	}
 
-	public String getImplementation() {
+  //<editor-fold desc="Setters and Getters">
+  public String getDate() {
+    return date;
+  }
+  public void setDate(String date) {
+    this.date = date;
+  }
+
+  public String getId() {
+    return id;
+  }
+  public void setId(String id) {
+    this.id = id;
+  }
+
+  public String getDatabase() {
+    return database;
+  }
+  public void setDatabase(String database) {
+    this.database = database;
+  }
+
+  public String getPort() {
+    return port;
+  }
+  public void setPort(String port) {
+    this.port = port;
+  }
+
+  public String getUsername() {
+    return username;
+  }
+  public void setUsername(String username) {
+    this.username = username;
+  }
+
+  public String getPassword() {
+    return password;
+  }
+  public void setPassword(String password) {
+    this.password = password;
+  }
+
+  public String getDbUrl() {
+    return dbUrl;
+  }
+  public void setDbUrl(String dbUrl) {
+    this.dbUrl = dbUrl;
+  }
+
+  public String getDbms() {
+    return dbms;
+  }
+  public void setDbms(String dbms) {
+    this.dbms = dbms;
+  }
+
+  public String getDatemin() {
+    return datemin;
+  }
+  public void setDatemin(String datemin) {
+    this.datemin = datemin;
+  }
+
+  public String getDatemax() {
+    return datemax;
+  }
+  public void setDatemax(String datemax) {
+    this.datemax = datemax;
+  }
+
+  public String getReportTable() {
+    return reportTable;
+  }
+  public void setReportTable(String reportTable) {
+    this.reportTable = reportTable;
+  }
+
+  public String getForecastTable() {
+    return forecastTable;
+  }
+  public void setForecastTable(String forecastTable) {
+    this.forecastTable = forecastTable;
+  }
+
+  public String getEnergyTable() {
+    return energyTable;
+  }
+  public void setEnergyTable(String energyTable) {
+    this.energyTable = energyTable;
+  }
+
+  public List<String> getLocations() {
+    return locations;
+  }
+  public void setLocations(String locations) {
+    for(String s :locations.split(",")){
+      this.locations.add(s.trim());
+    }
+  }
+
+  public String getImplementation() {
 		return implementation;
 	}
-
 	public void setImplementation(String implementation) {
 		this.implementation = implementation;
 	}
-
+  //</editor-fold>
 }

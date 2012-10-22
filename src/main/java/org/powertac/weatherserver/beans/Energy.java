@@ -5,6 +5,7 @@ public class Energy {
 	private String date;
 	private String price;
 	private String location;
+
 	public String getId() {
 		return id;
 	}
@@ -29,5 +30,4 @@ public class Energy {
 	public void setLocation(String location) {
 		this.location = location;
 	}
-
 }

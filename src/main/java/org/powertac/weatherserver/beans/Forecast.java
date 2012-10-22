@@ -9,7 +9,8 @@ public class Forecast {
 	private String cloudCover;
 	private String location;
 	
-	public Forecast(){
+	public Forecast ()
+  {
 		weatherId = "0";
 		weatherDate = "0000000000";
 		temp = "0";

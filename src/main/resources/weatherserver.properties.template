@@ -1,29 +1,21 @@
 # Database Configuration information for the weather server
 
-# Prod powertac
-db.database = powertac
-# Prod mysql
+db.database = powertac_weather
 db.dbms = mysql
-# Prod 3313
-db.port = 9660
-# Prod db.itlabs.umn.edu
+db.port = 3306
 db.dbUrl = localhost
-# Prod powertac
-db.username = root
-# Prod ce32985DRAjeL34dg
-db.password = localpassword
-			
+db.username = localUsername
+db.password = localPassword
+
 # Configuration Related properties
 
-#hhddmmyyyy
-
-#public locations and dates
-#comma delimited locations
+# public locations and dates
+# comma delimited locations
 publicLocations = minneapolis
 publicDateMin = 0000002009
 publicDateMax = 0000002012
 
-#[procedural|database] 
+# [procedural|database]
 # The procedural type creates forecast information via a trend based random walk
 # The database type performs the sql query agains the specified database table
 # Prod = procedural
@@ -34,10 +26,6 @@ tau0 = 1.0
 # (only used if procedural)
 sigma = .95
 
-
-# Prod reports
 reportTable = reports
-# Prod forecasts
 forecastTable = forecasts
-# Prod energy
 energyTable = energy
