@@ -77,11 +77,9 @@ public class Database {
 			//System.out.println("Successfully instantiated Database bean!");
 		}
     catch (FileNotFoundException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
     catch (IOException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 	}
@@ -110,7 +108,6 @@ public class Database {
 				//System.out.println("Connection is good");
 			}
 		} catch (SQLException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 	}
