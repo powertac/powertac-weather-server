@@ -56,7 +56,7 @@ public class Database {
 		try {
 			prop.load(Database.class.getClassLoader().getResourceAsStream(
 					"/weatherserver.properties"));
-			//System.out.println(prop);
+
 			// Database Connection related properties
 			setDatabase(prop.getProperty("db.database"));
 			setDbms(prop.getProperty("db.dbms"));
@@ -74,7 +74,6 @@ public class Database {
 			setReportTable(prop.getProperty("reportTable"));
 			setForecastTable(prop.getProperty("forecastTable"));
 			setEnergyTable(prop.getProperty("energyTable"));
-			//System.out.println("Successfully instantiated Database bean!");
 		}
     catch (FileNotFoundException e) {
 			e.printStackTrace();
@@ -87,9 +86,7 @@ public class Database {
 	private void checkDb() {
 		try {
 			if (conn == null || conn.isClosed()) {
-				//System.out.println("Connection is null");
 				if (dbms.equalsIgnoreCase("mysql")) {
-					//System.out.println("Using mysql as dbms ...");
 					try {
 						connectionProps.setProperty("user", username);
 						connectionProps.setProperty("password", password);
@@ -97,15 +94,10 @@ public class Database {
 						conn = DriverManager.getConnection("jdbc:" + dbms
 								+ "://" + dbUrl +  "/" + database,
 								connectionProps);
-						//System.out.println("Connected Successfully");
 					} catch (Exception e) {
-						//System.out.println("Connection Error");
 						e.printStackTrace();
 					}
 				}
-			}
-      else {
-				//System.out.println("Connection is good");
 			}
 		} catch (SQLException e) {
 			e.printStackTrace();
@@ -125,18 +117,11 @@ public class Database {
           String.format(Constants.DB_SELECT_REPORT, reportTable));
 		}
 		
-		//System.out.println("Date String: " + startDate + " is valid? " + validDate(startDate));
-		//System.out.println("Sql Date: " + startDate + " is " + new DateString(startDate).getLocaleString());
 		if (!validDate(startDate)){
-			//System.out.println("Date "+ startDate +" not available");
 			startDate = makeValidDate(startDate);
-			//System.out.println("Querying from " + startDate + " instead");
 		}
 		// Check to make sure they are requesting public data
 		if (getLocations().contains(location) && validDate(startDate)){
-			//System.out.println("Datestring: " + startDate);
-			//System.out.println("Sql Date: " + new DateString(startDate).getLocaleString());
-			//weatherStatement.setDate(1, (new DateString(startDate)).getSqlDate());
 			weatherStatement.setString(1, new DateString(startDate).getLocaleString());
 			weatherStatement.setString(2, location);
 	
@@ -148,14 +133,26 @@ public class Database {
 			lastWeather.setWeatherDate(String.valueOf("null"));
 			lastWeather.setLocation("minneapolis");
 
-			while(result.next()){
+			while (result.next()) {
 				Weather w = new Weather();
 				w.setWeatherId(result.getString("weatherId"));
 				w.setWeatherDate(result.getString("weatherDate"));
-				w.setTemp(result.getString("temp").contains("**")?lastWeather.getTemp():String.valueOf((result.getDouble("temp")-32.0d)* 5.0d/9.0d));
-				w.setWindDir(String.valueOf(result.getString("windDir").contains("**")?lastWeather.getWindDir():result.getDouble("windDir")>=360?0:result.getDouble("windDir")));
-				w.setWindSpeed(result.getString("windSpeed").contains("**")?lastWeather.getWindSpeed():String.valueOf(result.getDouble("windSpeed")*fromMpsToMs));
-				w.setCloudCover(result.getString("cloudCover").contains("**")?lastWeather.getCloudCover():result.getString("cloudCover"));
+				w.setTemp(
+            result.getString("temp").contains("**")
+                ?lastWeather.getTemp()
+                :String.valueOf((result.getDouble("temp")-32.0d)* 5.0d/9.0d));
+				w.setWindDir(
+            String.valueOf(result.getString("windDir").contains("**")
+                ?lastWeather.getWindDir()
+                :result.getDouble("windDir")>=360?0:result.getDouble("windDir")));
+				w.setWindSpeed(
+            result.getString("windSpeed").contains("**")
+                ?lastWeather.getWindSpeed()
+                :String.valueOf(result.getDouble("windSpeed")*fromMpsToMs));
+				w.setCloudCover(
+            result.getString("cloudCover").contains("**")
+                ?lastWeather.getCloudCover()
+                :result.getString("cloudCover"));
 				w.setLocation(result.getString("location"));
 				list.add(w);
 				lastWeather = w;
@@ -168,8 +165,8 @@ public class Database {
 		}
 	}
 
-	public List<Forecast> getForecastList(String weatherDate, String weatherLocation)
-      throws SQLException
+	public List<Forecast> getForecastList(String weatherDate,
+        String weatherLocation) throws SQLException
   {
 		checkDb();
 		
@@ -184,20 +181,9 @@ public class Database {
 			beforeDate.shiftBackDay();
 			afterDate.shiftAheadDay();
 			
-			//System.out.println("Procedural Implementation");
-			//System.out.println("Dates: " + beforeDate.getLocaleString() + " " + weatherDate + " " + afterDate.getLocaleString());
-			
 			List<Weather> rollingBefore = getWeatherList(beforeDate.getRestString(), weatherLocation);
 			List<Weather> rollingMiddle = getWeatherList(weatherDate, weatherLocation);
 			List<Weather> rollingAfter  = getWeatherList(afterDate.getRestString(), weatherLocation);
-			
-			//System.out.println("Before Date: " + beforeDate.getRestString());
-			//System.out.println("Middle Date: " + weatherDate);
-			//System.out.println("After Date: " + afterDate.getRestString());
-
-			//System.out.println("Rolling Before Size: " + rollingBefore.size());
-			//System.out.println("Rolling Middle Size: " + rollingMiddle.size());
-			//System.out.println("Rolling After Size: " + rollingAfter.size());
 			
 			Weather[] avgWeather = new Weather[rollingBefore.size()];
 			for (int i = 0; i < avgWeather.length ; i++) {
@@ -206,11 +192,8 @@ public class Database {
 				tmpList.add(rollingMiddle.get(i));
 				tmpList.add(rollingAfter.get(i));
 				avgWeather[i] = avgReports(tmpList);
-				//System.out.println("1: " + rollingBefore.get(i).getWindDir() + " 2: " + rollingMiddle.get(i).getWindDir() + " 3: " + rollingAfter.get(i).getWindDir());
-				//System.out.println("Avg: " + avgWeather[i].getWindDir());
 			}
-			//System.out.println("Avg Weather Length: " + avgWeather.length);
-			
+
 			List<Forecast> result = new ArrayList<Forecast>();
 			
 			Forecast tmpForecast;
@@ -227,19 +210,20 @@ public class Database {
 					Double newTemp = Double.parseDouble(w.getTemp()) * tau0;
 					tmpForecast.setTemp(newTemp.toString());
 					
-					Double newWindDir = (Double.parseDouble((w.getWindDir().equalsIgnoreCase("***")?"0":w.getWindDir())) * tau0)%360; 
+					Double newWindDir = (Double.parseDouble(
+              (w.getWindDir().equalsIgnoreCase("***")?"0":w.getWindDir())) * tau0)%360;
 					tmpForecast.setWindDir(newWindDir.toString());
 					
-					Double newWindSpeed = Double.parseDouble((w.getWindSpeed().equalsIgnoreCase("***")?"0":w.getWindSpeed())) * tau0;
+					Double newWindSpeed = Double.parseDouble(
+              (w.getWindSpeed().equalsIgnoreCase("***")?"0":w.getWindSpeed())) * tau0;
 					tmpForecast.setWindSpeed(newWindSpeed.toString());
 					
-					String newCloudCover = clampCloudCover( getCloudCoverValue(w.getCloudCover()) * tau0 );
+					String newCloudCover = clampCloudCover(
+              getCloudCoverValue(w.getCloudCover()) * tau0 );
 					tmpForecast.setCloudCover(newCloudCover);
 					
 					result.add(tmpForecast);
-					//System.out.println("tau0: " + tau0 );
-					//System.out.println("Avg Temp: " + w.getTemp());
-					
+
 					tau0 = tau0 * ((1.0/sigma - sigma)*Math.random() + sigma);
 					forecastDate.shiftAheadHour();
 				}
@@ -271,10 +255,14 @@ public class Database {
 		for (Weather w : weathers) {
 			tmpWeather.setLocation(w.getLocation());
 			
-			newTemp += Double.parseDouble((w.getTemp().contains("***") ? "0" : w.getTemp()));
-			newWindDir += Double.parseDouble((w.getWindDir().contains("***") ? "0" : w.getWindDir()));
-			newWindSpeed += Double.parseDouble((w.getWindSpeed().contains("***") ? "0" : w.getWindSpeed()));
-			newCloudCover += getCloudCoverValue(w.getCloudCover().contains("***") ? "0" : w.getCloudCover());
+			newTemp += Double.parseDouble(
+          (w.getTemp().contains("***") ? "0" : w.getTemp()));
+			newWindDir += Double.parseDouble(
+          (w.getWindDir().contains("***") ? "0" : w.getWindDir()));
+			newWindSpeed += Double.parseDouble(
+          (w.getWindSpeed().contains("***") ? "0" : w.getWindSpeed()));
+			newCloudCover += getCloudCoverValue(
+          w.getCloudCover().contains("***") ? "0" : w.getCloudCover());
 		}
 		
 		tmpWeather.setTemp(String.valueOf(newTemp/weathers.size()));

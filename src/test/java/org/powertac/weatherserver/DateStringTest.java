@@ -1,8 +1,10 @@
 package org.powertac.weatherserver;
 
-import static org.junit.Assert.*;
-
 import org.junit.Test;
+
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+
 
 public class DateStringTest {
 
@@ -34,7 +36,6 @@ public class DateStringTest {
 				"0000-01-01 00:00:00", localeStringInvalid);
 
 		// Test edge case where Rest String < 10 (pads zeros to the left)
-
 		DateString dsYear = new DateString("2012");
 		DateString dsMonth = new DateString("012012");
 		DateString dsDay = new DateString("01012012");
@@ -60,7 +61,6 @@ public class DateStringTest {
 
 		// Test edge case where String > 10 (truncates extra least significant
 		// digits on the left
-
 		DateString dsGreater = new DateString("000002022012");
 		String localeStringGreater = dsGreater.getLocaleString();
 		assertNotNull("DateString object is null after initialization",
@@ -68,15 +68,14 @@ public class DateStringTest {
 		assertNotNull("Locale String is null", localeStringGreater);
 		assertEquals("Conversion between Rest String to Locale String failed",
 				"2012-02-02 00:00:00", localeStringGreater);
-
 	}
+
 	@Test
 	public void outlierCaseTest(){
 		String testString = "2310102009";
 		System.out.println("Outlier");
 		DateString dsOut = new DateString(testString);
 		assertEquals("Covnersion between Rest String to Locale String failed","2009-10-10 23:00:00",dsOut.getLocaleString());
-		
 	}
 
 	@Test
@@ -106,9 +105,5 @@ public class DateStringTest {
 		assertEquals("Roll start is not correct","2011-12-31 00:00:00", roll.getLocaleString());
 		roll.shiftAheadDay();
 		assertEquals("Roll ahead day failed", "2012-01-01 00:00:00", roll.getLocaleString());
-		
-		
-		
 	}
-
 }

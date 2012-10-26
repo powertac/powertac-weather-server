@@ -35,7 +35,7 @@ public class Parser {
       return "Error null params";
     }
 
-    String[] responseTypeArray = (String[]) params.get(Constants.REQ_PARAM_TYPE);
+    //String[] responseTypeArray = (String[]) params.get(Constants.REQ_PARAM_TYPE);
     String[] weatherDateArray = (String[]) params.get(Constants.REQ_PARAM_WEATHER_DATE);
     //String[] weatherIdArray = (String []) params.get(Constants.REQ_PARAM_WEATHER_ID);
     String[] weatherLocationArray = (String []) params.get(Constants.REQ_PARAM_WEATHER_LOCATION);
@@ -63,6 +63,8 @@ public class Parser {
     List<Energy> energys = new ArrayList<Energy>();
 
     if (weatherDate != null && weatherLocation != null) {
+      System.out.println("Weather request : " + weatherDate +" "+ weatherLocation);
+
       Database db = new Database();
       try {
         if (responseType.equalsIgnoreCase("all")) {

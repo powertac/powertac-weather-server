@@ -17,7 +17,7 @@ public class DateString {
 			long integerInput = Long.parseLong(input);
 
 			// Check if dates are 10 characters long
-			int result = 0;
+			int result;
 			if ((result = 10 - input.length()) == 0) {
 				update(input);
 			} else {
@@ -30,14 +30,12 @@ public class DateString {
 		} catch (NumberFormatException e) {
 			// If there is an error parsing the integer update with zero date
 			//e.printStackTrace();
-			
 			update("0000000000");
 		}
 	}
 
 	private void update (String input)
   {
-		//System.out.println("Input String: " + input);
 		String hh = input.substring(0, 2);
 		String dd = input.substring(2, 4);
 		String mm = input.substring(4, 6);
@@ -60,16 +58,15 @@ public class DateString {
   {
 		Date sql = new Date(0);
 		sql.setTime(date.getTime().getTime());
-		return sql;// new Date(date.getTimeInMillis());
+		return sql;
 	}
 
 	public String getRestString ()
   {
-		String tmp = String.format("%02d%02d%02d%04d",
+		return String.format("%02d%02d%02d%04d",
 				date.get(Calendar.HOUR_OF_DAY),
 				date.get(Calendar.DAY_OF_MONTH), date.get(Calendar.MONTH) + 1,
 				date.get(Calendar.YEAR));
-		return tmp;
 	}
 
 	public void shiftBackDay ()
@@ -85,7 +82,6 @@ public class DateString {
 	public void shiftAheadDay ()
   {
 		date.set(Calendar.DAY_OF_YEAR, date.get(Calendar.DAY_OF_YEAR) + 1);
-		//date.roll(Calendar.DAY_OF_YEAR, 1);
 		String tmp = String.format("%04d-%02d-%02d %02d:%s:%s",
 				date.get(Calendar.YEAR), date.get(Calendar.MONTH) + 1,
 				date.get(Calendar.DAY_OF_MONTH),
@@ -96,7 +92,6 @@ public class DateString {
 	public void shiftAheadHour ()
   {
 		date.set(Calendar.HOUR_OF_DAY, date.get(Calendar.HOUR_OF_DAY) + 1);
-		//date.roll(Calendar.HOUR_OF_DAY, 1);
 		String tmp = String.format("%04d-%02d-%02d %02d:%s:%s",
 				date.get(Calendar.YEAR),
 				date.get(Calendar.MONTH) + 1,
