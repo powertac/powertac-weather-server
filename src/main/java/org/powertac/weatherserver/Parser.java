@@ -20,7 +20,6 @@ import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
 import java.io.StringWriter;
-import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -28,7 +27,7 @@ import java.util.Map;
 @ManagedBean
 @RequestScoped
 public class Parser {
-	
+
 	public static String parseRestRequest (Map<?, ?> params)
   {
     if (params == null) {
@@ -63,6 +62,7 @@ public class Parser {
     List<Energy> energys = new ArrayList<Energy>();
 
     if (weatherDate != null && weatherLocation != null) {
+      // TODO Remove below
       System.out.println("Weather request : " + weatherDate +" "+ weatherLocation);
 
       Database db = new Database();
@@ -81,8 +81,10 @@ public class Parser {
         else if(responseType.equalsIgnoreCase("energy")) {
           energy = db.getEnergyList(weatherDate, weatherLocation);
         }*/
-      } catch (SQLException e) {
-        e.printStackTrace();
+      }
+      catch (Exception e) {
+        // TODO Enable below
+        //e.printStackTrace();
         return "Query Failure";
       }
     }
@@ -127,15 +129,15 @@ public class Parser {
       rootElement.appendChild(weatherForecasts);
 
       for (Forecast forecast: forecasts) {
-        Element weatherReport = doc.createElement("weatherForecast");
-        weatherReport.setAttribute("id", forecast.getWeatherId());
-        weatherReport.setAttribute("date", forecast.getWeatherDate());
-        weatherReport.setAttribute("temp", forecast.getTemp());
-        weatherReport.setAttribute("windspeed", forecast.getWindSpeed());
-        weatherReport.setAttribute("winddir", forecast.getWindDir());
-        weatherReport.setAttribute("cloudcover", forecast.getCloudCover());
-        weatherReport.setAttribute("location", forecast.getLocation());
-        weatherForecasts.appendChild(weatherReport);
+        Element weatherForecast = doc.createElement("weatherForecast");
+        weatherForecast.setAttribute("id", forecast.getWeatherId());
+        weatherForecast.setAttribute("date", forecast.getWeatherDate());
+        weatherForecast.setAttribute("temp", forecast.getTemp());
+        weatherForecast.setAttribute("windspeed", forecast.getWindSpeed());
+        weatherForecast.setAttribute("winddir", forecast.getWindDir());
+        weatherForecast.setAttribute("cloudcover", forecast.getCloudCover());
+        weatherForecast.setAttribute("location", forecast.getLocation());
+        weatherForecasts.appendChild(weatherForecast);
       }
 
       // energyReports elements
@@ -143,12 +145,12 @@ public class Parser {
       rootElement.appendChild(energyReports);
 
       for (Energy energy: energys) {
-        Element weatherReport = doc.createElement("energyReport");
-        weatherReport.setAttribute("id", energy.getId());
-        weatherReport.setAttribute("date", energy.getDate());
-        weatherReport.setAttribute("price", energy.getPrice());
-        weatherReport.setAttribute("location", energy.getLocation());
-        energyReports.appendChild(weatherReport);
+        Element energyReport = doc.createElement("energyReport");
+        energyReport.setAttribute("id", energy.getId());
+        energyReport.setAttribute("date", energy.getDate());
+        energyReport.setAttribute("price", energy.getPrice());
+        energyReport.setAttribute("location", energy.getLocation());
+        energyReports.appendChild(energyReport);
       }
 
       TransformerFactory transFactory = TransformerFactory.newInstance();
@@ -169,7 +171,7 @@ public class Parser {
     return "Query Failure";
   }
 
-  public static String parseRestOptions (Map<?, ?> params)
+  public static String parseOptionsRequest (Map<?, ?> params)
   {
     return "Not implemented yet";
   }

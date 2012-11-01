@@ -24,7 +24,7 @@ public class DateStringTest {
 		assertNotNull("DateString object is null after initialization", dsZero);
 		assertNotNull("Locale String is null", localeStringZero);
 		assertEquals("Conversion between Rest String to Locale String failed",
-				"0000-01-01 00:00:00", localeStringZero);
+				"0001-01-01 00:00:00", localeStringZero);
 
 		// Test invalid date string
 		DateString dsInvalid = new DateString("asdfghyjjk");
@@ -33,7 +33,7 @@ public class DateStringTest {
 				dsInvalid);
 		assertNotNull("Locale String is null", localeStringInvalid);
 		assertEquals("Conversion between Rest String to Locale String failed",
-				"0000-01-01 00:00:00", localeStringInvalid);
+				"0001-01-01 00:00:00", localeStringInvalid);
 
 		// Test edge case where Rest String < 10 (pads zeros to the left)
 		DateString dsYear = new DateString("2012");
@@ -73,7 +73,6 @@ public class DateStringTest {
 	@Test
 	public void outlierCaseTest(){
 		String testString = "2310102009";
-		System.out.println("Outlier");
 		DateString dsOut = new DateString(testString);
 		assertEquals("Covnersion between Rest String to Locale String failed","2009-10-10 23:00:00",dsOut.getLocaleString());
 	}

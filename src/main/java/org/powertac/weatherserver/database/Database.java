@@ -104,61 +104,59 @@ public class Database {
 		}
 	}
 
-	public List<Weather> getWeatherList(String startDate, String location) throws SQLException {
+	public List<Weather> getWeatherList(String weatherDate, String location)
+      throws Exception {
 		checkDb();
-		
-		// Datestring is not the correct length
-		if (startDate.length() != 10){
-			return new ArrayList<Weather>();
-		}
-		
+
 		if (weatherStatement == null || weatherStatement.isClosed()) {
 			weatherStatement = conn.prepareStatement(
           String.format(Constants.DB_SELECT_REPORT, reportTable));
 		}
-		
-		if (!validDate(startDate)){
-			startDate = makeValidDate(startDate);
+
+    // Make sure we have a valid date
+		if (!validDate(weatherDate)) {
+			weatherDate = makeValidDate(weatherDate);
 		}
+
 		// Check to make sure they are requesting public data
-		if (getLocations().contains(location) && validDate(startDate)){
-			weatherStatement.setString(1, new DateString(startDate).getLocaleString());
+		if (getLocations().contains(location) && validDate(weatherDate)) {
+			weatherStatement.setString(1, new DateString(weatherDate).getLocaleString());
 			weatherStatement.setString(2, location);
+
+			ResultSet resultSet = weatherStatement.executeQuery();
 	
-			ResultSet result = weatherStatement.executeQuery();
-	
-			List<Weather> list = new ArrayList<Weather>();
+			List<Weather> result = new ArrayList<Weather>();
 			Weather lastWeather = new Weather();
 			lastWeather.setWeatherId(String.valueOf(-1));
 			lastWeather.setWeatherDate(String.valueOf("null"));
 			lastWeather.setLocation("minneapolis");
 
-			while (result.next()) {
+			while (resultSet.next()) {
 				Weather w = new Weather();
-				w.setWeatherId(result.getString("weatherId"));
-				w.setWeatherDate(result.getString("weatherDate"));
+				w.setWeatherId(resultSet.getString("weatherId"));
+				w.setWeatherDate(resultSet.getString("weatherDate"));
 				w.setTemp(
-            result.getString("temp").contains("**")
+            resultSet.getString("temp").contains("**")
                 ?lastWeather.getTemp()
-                :String.valueOf((result.getDouble("temp")-32.0d)* 5.0d/9.0d));
+                :String.valueOf((resultSet.getDouble("temp")-32.0d)* 5.0d/9.0d));
 				w.setWindDir(
-            String.valueOf(result.getString("windDir").contains("**")
+            String.valueOf(resultSet.getString("windDir").contains("**")
                 ?lastWeather.getWindDir()
-                :result.getDouble("windDir")>=360?0:result.getDouble("windDir")));
+                :resultSet.getDouble("windDir")>=360?0:resultSet.getDouble("windDir")));
 				w.setWindSpeed(
-            result.getString("windSpeed").contains("**")
+            resultSet.getString("windSpeed").contains("**")
                 ?lastWeather.getWindSpeed()
-                :String.valueOf(result.getDouble("windSpeed")*fromMpsToMs));
+                :String.valueOf(resultSet.getDouble("windSpeed")*fromMpsToMs));
 				w.setCloudCover(
-            result.getString("cloudCover").contains("**")
+            resultSet.getString("cloudCover").contains("**")
                 ?lastWeather.getCloudCover()
-                :result.getString("cloudCover"));
-				w.setLocation(result.getString("location"));
-				list.add(w);
+                :resultSet.getString("cloudCover"));
+				w.setLocation(resultSet.getString("location"));
+				result.add(w);
 				lastWeather = w;
 			}
 			conn.close();
-			return list;
+			return result;
 		}
     else {
 			return new ArrayList<Weather>();
@@ -166,9 +164,14 @@ public class Database {
 	}
 
 	public List<Forecast> getForecastList(String weatherDate,
-        String weatherLocation) throws SQLException
+                                        String weatherLocation)
+      throws Exception
   {
 		checkDb();
+
+    if (!validDate(weatherDate)) {
+      weatherDate = makeValidDate(weatherDate);
+    }
 		
 		// Procedural implementation does a trend based random walk
 		if (implementation.equals("procedural")) {
@@ -180,11 +183,11 @@ public class Database {
 			
 			beforeDate.shiftBackDay();
 			afterDate.shiftAheadDay();
-			
+
 			List<Weather> rollingBefore = getWeatherList(beforeDate.getRestString(), weatherLocation);
 			List<Weather> rollingMiddle = getWeatherList(weatherDate, weatherLocation);
 			List<Weather> rollingAfter  = getWeatherList(afterDate.getRestString(), weatherLocation);
-			
+
 			Weather[] avgWeather = new Weather[rollingBefore.size()];
 			for (int i = 0; i < avgWeather.length ; i++) {
 				List<Weather> tmpList = new ArrayList<Weather>();
@@ -316,8 +319,8 @@ public class Database {
 		Date sqlDatemin = new DateString(getDatemin()).getSqlDate();
 		Date sqlDatemax = new DateString(getDatemax()).getSqlDate();
 		Date testDate = new DateString(date).getSqlDate();
-		
-		return (testDate.before(sqlDatemax) && testDate.after(sqlDatemin));
+
+		return (!testDate.after(sqlDatemax) || !testDate.before(sqlDatemin));
 	}
 	
 	public String makeValidDate (String date)
