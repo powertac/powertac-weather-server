@@ -18,9 +18,9 @@ public class DateString {
       if (input.length() == 10) {
         update(input);
       } else if (input.length() < 10) {
-        update(String.format("%010d", integerInput));
+        update(String.format("%-10s", integerInput).replace(' ', '0'));
       } else {
-        update(input.substring(input.length() - 10));
+        update(input.substring(0, 10));
       }
 		} catch (NumberFormatException e) {
 			// If there is an error parsing the integer update with zero date
@@ -30,14 +30,14 @@ public class DateString {
 
 	private void update (String input)
   {
-		String hh = input.substring(0, 2);
-    int hour = Math.min(Math.max(Integer.parseInt(hh), 0), 23);
-		String dd = input.substring(2, 4);
-    int day = Math.min(Math.max(Integer.parseInt(dd), 1), 31);
-		String mm = input.substring(4, 6);
-    int month = Math.min(Math.max(Integer.parseInt(mm), 1), 12);
-    String yyyy = input.substring(6);
+    String yyyy = input.substring(0, 4);
     int year = Math.min(Math.max(Integer.parseInt(yyyy), 1), 3000);
+    String mm = input.substring(4, 6);
+    int month = Math.min(Math.max(Integer.parseInt(mm), 1), 12);
+		String dd = input.substring(6, 8);
+    int day = Math.min(Math.max(Integer.parseInt(dd), 1), 31);
+    String hh = input.substring(8);
+    int hour = Math.min(Math.max(Integer.parseInt(hh), 0), 23);
 
 		date.set(year, month - 1, day, hour, 0);
     updateLocateString();

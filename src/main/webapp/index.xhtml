@@ -6,7 +6,6 @@
 	xmlns:ui="http://java.sun.com/jsf/facelets"
 	xmlns:f="http://java.sun.com/jsf/core">
 
-
 <metadata xmlns="http://java.sun.com/jsf/core">
   <event type="preRenderView" listener="#{rest.respond}"/>
 </metadata>
@@ -14,7 +13,6 @@
 <head>
 <title>Powertac 2012 WeatherServer</title>
 </head>
-
 
 <body>
 	<h2>Weather Server REST API Page</h2>
@@ -28,16 +26,15 @@
 			To make REST calls on the Weather Server, you will use the
 			index.xhtml page, as the example below: <br />
 			<blockquote>
-				<i>http://url.to.weather.server:8080/WeatherServer/faces/index.xhtml?weatherDate=0201032009&amp;weatherLocation=rotterdam</i>
+				<i>http://url.to.weather.server:8080/WeatherServer/faces/index.xhtml?weatherDate=2009030102&amp;weatherLocation=rotterdam</i>
 			</blockquote>
 
 			<br /> Required Parameters: <br />
 			<ul>
-				<li><b>weatherDate=<i>{date-of-specific-weather-record-in-this-format[hhddmmyyyy]}</i></b>
+				<li><b>weatherDate=<i>{date-of-specific-weather-record}</i></b>
 					- This allows you to specify the date or record id of weather data
-					that you want. The weatherId parameter is the primary key in the
-					weather record database; whereas, the weatherDate parameter is the
-					date in the following format [hhddmmyyyy]</li>
+					that you want. The weatherDate parameter is the date in the following
+          format [yyyymmddhh]</li>
 
 				<li><b>weatherLocation=<i>{location-string-for-weather-of-a-region}</i></b>
 					- This allows you to specify the location you wish to receive
