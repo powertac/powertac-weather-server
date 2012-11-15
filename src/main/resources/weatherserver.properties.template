@@ -11,7 +11,7 @@ db.password = localPassword
 
 # public locations and dates
 # comma delimited locations
-publicLocations = minneapolis
+publicLocations = rotterdam
 publicDateMin = 0000002009
 publicDateMax = 0000002012
 

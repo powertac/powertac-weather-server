@@ -1,17 +1,10 @@
 package org.powertac.weatherserver.beans;
 
 public class Energy {
-	private String id;
 	private String date;
 	private String price;
 	private String location;
 
-	public String getId() {
-		return id;
-	}
-	public void setId(String id) {
-		this.id = id;
-	}
 	public String getDate() {
 		return date;
 	}

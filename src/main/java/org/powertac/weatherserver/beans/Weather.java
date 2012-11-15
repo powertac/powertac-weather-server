@@ -1,7 +1,6 @@
 package org.powertac.weatherserver.beans;
 
 public class Weather {
-	private String weatherId;
 	private String weatherDate;
 	private String temp;
 	private String windDir;
@@ -11,7 +10,6 @@ public class Weather {
 	
 	public Weather ()
   {
-		weatherId = "0";
 		weatherDate = "0000000000";
 		temp = "0";
 		windDir = "0";
@@ -20,12 +18,6 @@ public class Weather {
 		location = "NONE";
 	}
 	
-	public String getWeatherId() {
-		return weatherId;
-	}
-	public void setWeatherId(String weatherId) {
-		this.weatherId = weatherId;
-	}
 	public String getWeatherDate() {
 		return weatherDate;
 	}

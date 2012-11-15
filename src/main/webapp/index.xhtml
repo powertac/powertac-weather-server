@@ -28,12 +28,12 @@
 			To make REST calls on the Weather Server, you will use the
 			index.xhtml page, as the example below: <br />
 			<blockquote>
-				<i>http://url.to.weather.server:8080/WeatherServer/faces/index.xhtml?weatherId=1</i>
+				<i>http://url.to.weather.server:8080/WeatherServer/faces/index.xhtml?weatherDate=0201032009&amp;weatherLocation=rotterdam</i>
 			</blockquote>
 
 			<br /> Required Parameters: <br />
 			<ul>
-				<li><b>weatherId=<i>{specific-weather-record-id}</i></b> or <b>weatherDate=<i>{date-of-specific-weather-record-in-this-format[hhddmmyyyy]}</i></b>
+				<li><b>weatherDate=<i>{date-of-specific-weather-record-in-this-format[hhddmmyyyy]}</i></b>
 					- This allows you to specify the date or record id of weather data
 					that you want. The weatherId parameter is the primary key in the
 					weather record database; whereas, the weatherDate parameter is the
@@ -43,6 +43,7 @@
 					- This allows you to specify the location you wish to receive
 					weather. This parameter is the name of the location as a string.</li>
 			</ul>
+      <!-- ignored for now
 			Optional Parameters: <br />
 			<ul>
 				<li><b>type=<i>{report|forecast|energy}</i></b> - Specify the
@@ -52,6 +53,7 @@
 					forecasts, and the "energy" type will give only energy bid reports.
 					If this parameter is not specified, all three types are given.</li>
 			</ul>
+			-->
 		</p>
 </body>
 </html>

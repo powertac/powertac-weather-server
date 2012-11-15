@@ -36,12 +36,10 @@ public class Parser {
 
     //String[] responseTypeArray = (String[]) params.get(Constants.REQ_PARAM_TYPE);
     String[] weatherDateArray = (String[]) params.get(Constants.REQ_PARAM_WEATHER_DATE);
-    //String[] weatherIdArray = (String []) params.get(Constants.REQ_PARAM_WEATHER_ID);
     String[] weatherLocationArray = (String []) params.get(Constants.REQ_PARAM_WEATHER_LOCATION);
 
     String responseType = "all";
     String weatherDate = "default";
-    //String weatherId = "1";
     String weatherLocation = "default";
 
     //if(responseTypeArray != null){
@@ -53,18 +51,12 @@ public class Parser {
     if (weatherDateArray != null) {
       weatherDate = weatherDateArray[0];
     }
-    //if (weatherDateArray == null && weatherIdArray != null) {
-    //	weatherId = weatherIdArray[0];
-    //}
 
     List<Weather> reports = new ArrayList<Weather>();
     List<Forecast> forecasts = new ArrayList<Forecast>();
     List<Energy> energys = new ArrayList<Energy>();
 
     if (weatherDate != null && weatherLocation != null) {
-      // TODO Remove below
-      System.out.println("Weather request : " + weatherDate +" "+ weatherLocation);
-
       Database db = new Database();
       try {
         if (responseType.equalsIgnoreCase("all")) {
@@ -114,7 +106,6 @@ public class Parser {
 
       for (Weather weather: reports) {
         Element weatherReport = doc.createElement("weatherReport");
-        weatherReport.setAttribute("id", weather.getWeatherId());
         weatherReport.setAttribute("date", weather.getWeatherDate());
         weatherReport.setAttribute("temp", weather.getTemp());
         weatherReport.setAttribute("windspeed", weather.getWindSpeed());
@@ -130,7 +121,6 @@ public class Parser {
 
       for (Forecast forecast: forecasts) {
         Element weatherForecast = doc.createElement("weatherForecast");
-        weatherForecast.setAttribute("id", forecast.getWeatherId());
         weatherForecast.setAttribute("date", forecast.getWeatherDate());
         weatherForecast.setAttribute("temp", forecast.getTemp());
         weatherForecast.setAttribute("windspeed", forecast.getWindSpeed());
@@ -146,7 +136,6 @@ public class Parser {
 
       for (Energy energy: energys) {
         Element energyReport = doc.createElement("energyReport");
-        energyReport.setAttribute("id", energy.getId());
         energyReport.setAttribute("date", energy.getDate());
         energyReport.setAttribute("price", energy.getPrice());
         energyReport.setAttribute("location", energy.getLocation());

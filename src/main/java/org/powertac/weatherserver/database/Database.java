@@ -19,12 +19,8 @@ import java.util.Properties;
 @RequestScoped
 public class Database {
 
-	// Conversions parms
-	private Double fromMpsToMs = 0.44704;
-	
 	// Requested parameters
 	private String date = "";
-	private String id = "";
 
 	// Data limiting factors
 	private String datemin = "";
@@ -126,34 +122,15 @@ public class Database {
 			ResultSet resultSet = weatherStatement.executeQuery();
 	
 			List<Weather> result = new ArrayList<Weather>();
-			Weather lastWeather = new Weather();
-			lastWeather.setWeatherId(String.valueOf(-1));
-			lastWeather.setWeatherDate(String.valueOf("null"));
-			lastWeather.setLocation("minneapolis");
-
 			while (resultSet.next()) {
 				Weather w = new Weather();
-				w.setWeatherId(resultSet.getString("weatherId"));
 				w.setWeatherDate(resultSet.getString("weatherDate"));
-				w.setTemp(
-            resultSet.getString("temp").contains("**")
-                ?lastWeather.getTemp()
-                :String.valueOf((resultSet.getDouble("temp")-32.0d)* 5.0d/9.0d));
-				w.setWindDir(
-            String.valueOf(resultSet.getString("windDir").contains("**")
-                ?lastWeather.getWindDir()
-                :resultSet.getDouble("windDir")>=360?0:resultSet.getDouble("windDir")));
-				w.setWindSpeed(
-            resultSet.getString("windSpeed").contains("**")
-                ?lastWeather.getWindSpeed()
-                :String.valueOf(resultSet.getDouble("windSpeed")*fromMpsToMs));
-				w.setCloudCover(
-            resultSet.getString("cloudCover").contains("**")
-                ?lastWeather.getCloudCover()
-                :resultSet.getString("cloudCover"));
+				w.setTemp(String.valueOf(resultSet.getDouble("temp")));
+				w.setWindDir(String.valueOf(resultSet.getDouble("windDir") % 360));
+				w.setWindSpeed(String.valueOf(resultSet.getDouble("windSpeed")));
+				w.setCloudCover(String.valueOf(resultSet.getString("cloudCover")));
 				w.setLocation(resultSet.getString("location"));
 				result.add(w);
-				lastWeather = w;
 			}
 			conn.close();
 			return result;
@@ -175,63 +152,65 @@ public class Database {
 		
 		// Procedural implementation does a trend based random walk
 		if (implementation.equals("procedural")) {
-			double tau0 = Double.parseDouble(prop.getProperty("tau0"));
-			double sigma = Double.parseDouble(prop.getProperty("sigma"));
-			
 			DateString beforeDate = new DateString(weatherDate);
 			DateString afterDate = new DateString(weatherDate);
-			
+      DateString afterAfterDate = new DateString(weatherDate);
+
 			beforeDate.shiftBackDay();
 			afterDate.shiftAheadDay();
+      afterAfterDate.shiftAheadDay();
+      afterAfterDate.shiftAheadDay();
 
-			List<Weather> rollingBefore = getWeatherList(beforeDate.getRestString(), weatherLocation);
-			List<Weather> rollingMiddle = getWeatherList(weatherDate, weatherLocation);
-			List<Weather> rollingAfter  = getWeatherList(afterDate.getRestString(), weatherLocation);
+			List<Weather> rollingBefore = getWeatherList(
+          beforeDate.getRestString(), weatherLocation);
+			List<Weather> rollingMiddle = getWeatherList(
+          weatherDate, weatherLocation);
+			List<Weather> rollingAfter  = getWeatherList(
+          afterDate.getRestString(), weatherLocation);
+      List<Weather> rollingAfterAfter  = getWeatherList(
+          afterAfterDate.getRestString(), weatherLocation);
 
-			Weather[] avgWeather = new Weather[rollingBefore.size()];
-			for (int i = 0; i < avgWeather.length ; i++) {
+			Weather[] avgWeather = new Weather[2 * rollingBefore.size()];
+			for (int i = 0; i < rollingBefore.size(); i++) {
 				List<Weather> tmpList = new ArrayList<Weather>();
 				tmpList.add(rollingBefore.get(i));
 				tmpList.add(rollingMiddle.get(i));
 				tmpList.add(rollingAfter.get(i));
 				avgWeather[i] = avgReports(tmpList);
 			}
+      for (int i = 0; i < rollingBefore.size(); i++) {
+        List<Weather> tmpList = new ArrayList<Weather>();
+        tmpList.add(rollingMiddle.get(i));
+        tmpList.add(rollingAfter.get(i));
+        tmpList.add(rollingAfterAfter.get(i));
+        avgWeather[rollingBefore.size() + i] = avgReports(tmpList);
+      }
 
-			List<Forecast> result = new ArrayList<Forecast>();
-			
-			Forecast tmpForecast;
-			DateString forecastDate = new DateString(weatherDate);
-			int forecastId=0;
-			for (int i=0; i<2; i++) {
-				for (Weather w : avgWeather) {
-					tmpForecast = new Forecast();
-					tmpForecast.setWeatherId(String.valueOf(forecastId++));
-					tmpForecast.setLocation(w.getLocation());
-					
-					tmpForecast.setWeatherDate(forecastDate.getLocaleString());
-					
-					Double newTemp = Double.parseDouble(w.getTemp()) * tau0;
-					tmpForecast.setTemp(newTemp.toString());
-					
-					Double newWindDir = (Double.parseDouble(
-              (w.getWindDir().equalsIgnoreCase("***")?"0":w.getWindDir())) * tau0)%360;
-					tmpForecast.setWindDir(newWindDir.toString());
-					
-					Double newWindSpeed = Double.parseDouble(
-              (w.getWindSpeed().equalsIgnoreCase("***")?"0":w.getWindSpeed())) * tau0;
-					tmpForecast.setWindSpeed(newWindSpeed.toString());
-					
-					String newCloudCover = clampCloudCover(
-              getCloudCoverValue(w.getCloudCover()) * tau0 );
-					tmpForecast.setCloudCover(newCloudCover);
-					
-					result.add(tmpForecast);
+      List<Forecast> result = new ArrayList<Forecast>();
+      for (int i = 0; i < 24; i++) {
+        double tau0 = Double.parseDouble(prop.getProperty("tau0"));
+        double sigma = Double.parseDouble(prop.getProperty("sigma"));
 
-					tau0 = tau0 * ((1.0/sigma - sigma)*Math.random() + sigma);
-					forecastDate.shiftAheadHour();
-				}
-			}
-			
+        for (int j = 0; j < 24; j++) {
+          Weather weather = avgWeather[i + j + 1];
+
+          Forecast tmpForecast = new Forecast();
+          tmpForecast.setLocation(weather.getLocation());
+          tmpForecast.setWeatherDate(weather.getWeatherDate());
+          tmpForecast.setTemp(String.valueOf(
+              Double.parseDouble(weather.getTemp()) * tau0));
+          tmpForecast.setWindDir(String.valueOf(
+              (Double.parseDouble(weather.getWindDir()) * tau0) % 360));
+          tmpForecast.setWindSpeed(String.valueOf(
+              Double.parseDouble(weather.getWindSpeed()) * tau0));
+          tmpForecast.setCloudCover(String.valueOf(
+              Double.parseDouble(weather.getCloudCover()) * tau0));
+          result.add(tmpForecast);
+
+          tau0 = tau0 * ((1.0/sigma - sigma)*Math.random() + sigma);
+        }
+      }
+
 			return result;
 		}
     else {
@@ -254,66 +233,31 @@ public class Database {
 		Double newWindDir = 0.0;
 		Double newWindSpeed = 0.0;
 		Double newCloudCover = 0.0;
-		
+    String date = "";
+
+    int count = 0;
 		for (Weather w : weathers) {
 			tmpWeather.setLocation(w.getLocation());
 			
-			newTemp += Double.parseDouble(
-          (w.getTemp().contains("***") ? "0" : w.getTemp()));
-			newWindDir += Double.parseDouble(
-          (w.getWindDir().contains("***") ? "0" : w.getWindDir()));
-			newWindSpeed += Double.parseDouble(
-          (w.getWindSpeed().contains("***") ? "0" : w.getWindSpeed()));
-			newCloudCover += getCloudCoverValue(
-          w.getCloudCover().contains("***") ? "0" : w.getCloudCover());
+			newTemp += Double.parseDouble(w.getTemp());
+			newWindDir += Double.parseDouble(w.getWindDir());
+			newWindSpeed += Double.parseDouble(w.getWindSpeed());
+			newCloudCover += Double.parseDouble(w.getCloudCover());
+
+      if (Math.floor(weathers.size() / 2) == count++) {
+        date = w.getWeatherDate().replace(":00.0", "");
+      }
 		}
 		
 		tmpWeather.setTemp(String.valueOf(newTemp/weathers.size()));
 		tmpWeather.setWindDir(String.valueOf(newWindDir/weathers.size()));
 		tmpWeather.setWindSpeed(String.valueOf(newWindSpeed/weathers.size()));
-		tmpWeather.setCloudCover(clampCloudCover(newCloudCover/weathers.size()));
-		
+		tmpWeather.setCloudCover(String.valueOf(newCloudCover/weathers.size()));
+    tmpWeather.setWeatherDate(date);
+
 		return tmpWeather;
 	}
 	
-	private double getCloudCoverValue (String s)
-  {
-		if (s.equalsIgnoreCase("clr")) {
-			return 0.0;
-		}
-    else if (s.equalsIgnoreCase("sct")) {
-			return 3.0/8.0;
-		}
-    else if (s.equalsIgnoreCase("bkn")) {
-			return 6.0/8.0;
-		}
-    else if (s.equalsIgnoreCase("ovc")) {
-			return 1.0;
-		}
-    else if (s.equalsIgnoreCase("obs")) {
-			return 1.0;
-		}
-    else {
-			return 1.0;
-		}
-	}
-	
-	private String clampCloudCover (Double value)
-  {
-		if (value < 1.0/8.0) {
-			return "CLR";
-		}
-    else if (value < 4.0/8.0) {
-			return "SCT";
-		}
-    else if (value < 7.0/8.0) {
-			return "BKN";
-		}
-    else {
-			return "OVC";
-		}
-	}
-
 	public boolean validDate (String date)
   {
 		Date sqlDatemin = new DateString(getDatemin()).getSqlDate();
@@ -346,13 +290,6 @@ public class Database {
   }
   public void setDate(String date) {
     this.date = date;
-  }
-
-  public String getId() {
-    return id;
-  }
-  public void setId(String id) {
-    this.id = id;
   }
 
   public String getDatabase() {
