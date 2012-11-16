@@ -204,7 +204,9 @@ public class Database {
           tmpForecast.setWindSpeed(String.valueOf(
               Double.parseDouble(weather.getWindSpeed()) * tau0));
           tmpForecast.setCloudCover(String.valueOf(
-              Double.parseDouble(weather.getCloudCover()) * tau0));
+              Math.min(
+                  1, Math.max(0,
+                      Double.parseDouble(weather.getCloudCover()) * tau0))));
           result.add(tmpForecast);
 
           tau0 = tau0 * ((1.0/sigma - sigma)*Math.random() + sigma);
