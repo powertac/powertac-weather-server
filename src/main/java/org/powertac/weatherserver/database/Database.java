@@ -124,7 +124,7 @@ public class Database {
 			List<Weather> result = new ArrayList<Weather>();
 			while (resultSet.next()) {
 				Weather w = new Weather();
-				w.setWeatherDate(resultSet.getString("weatherDate"));
+				w.setWeatherDate(resultSet.getString("weatherDate").replace(":00.0",""));
 				w.setTemp(String.valueOf(resultSet.getDouble("temp")));
 				w.setWindDir(String.valueOf(resultSet.getDouble("windDir") % 360));
 				w.setWindSpeed(String.valueOf(resultSet.getDouble("windSpeed")));
@@ -247,7 +247,7 @@ public class Database {
 			newCloudCover += Double.parseDouble(w.getCloudCover());
 
       if (Math.floor(weathers.size() / 2) == count++) {
-        date = w.getWeatherDate().replace(":00.0", "");
+        date = w.getWeatherDate();
       }
 		}
 		
