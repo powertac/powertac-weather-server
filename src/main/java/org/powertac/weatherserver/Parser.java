@@ -58,6 +58,12 @@ public class Parser {
 
     if (weatherDate != null && weatherLocation != null) {
       Database db = new Database();
+
+      // Make sure we have a valid date
+      if (!db.validDate(weatherDate)) {
+        weatherDate = db.makeValidDate(weatherDate);
+      }
+
       try {
         if (responseType.equalsIgnoreCase("all")) {
           reports = db.getWeatherList(weatherDate, weatherLocation);

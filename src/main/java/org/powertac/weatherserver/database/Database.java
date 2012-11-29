@@ -170,16 +170,17 @@ public class Database {
       List<Weather> rollingAfterAfter  = getWeatherList(
           afterAfterDate.getRestString(), weatherLocation);
 
+      List<Weather> tmpList;
 			Weather[] avgWeather = new Weather[2 * rollingBefore.size()];
 			for (int i = 0; i < rollingBefore.size(); i++) {
-				List<Weather> tmpList = new ArrayList<Weather>();
+				tmpList = new ArrayList<Weather>();
 				tmpList.add(rollingBefore.get(i));
 				tmpList.add(rollingMiddle.get(i));
 				tmpList.add(rollingAfter.get(i));
 				avgWeather[i] = avgReports(tmpList);
 			}
       for (int i = 0; i < rollingBefore.size(); i++) {
-        List<Weather> tmpList = new ArrayList<Weather>();
+        tmpList = new ArrayList<Weather>();
         tmpList.add(rollingMiddle.get(i));
         tmpList.add(rollingAfter.get(i));
         tmpList.add(rollingAfterAfter.get(i));
@@ -266,7 +267,7 @@ public class Database {
 		Date sqlDatemax = new DateString(getDatemax()).getSqlDate();
 		Date testDate = new DateString(date).getSqlDate();
 
-		return (!testDate.after(sqlDatemax) || !testDate.before(sqlDatemin));
+		return (!testDate.after(sqlDatemax) && !testDate.before(sqlDatemin));
 	}
 	
 	public String makeValidDate (String date)
@@ -276,10 +277,22 @@ public class Database {
 		Date testDate = new DateString(date).getSqlDate();
 		
 		if (testDate.before(sqlDatemin)) {
-			return date.substring(0,5) + getDatemin().substring(5,10);
+      String newDate = date.substring(0,5) + getDatemin().substring(5,10);
+      if (validDate(newDate)) {
+        return newDate;
+      }
+      else {
+        return getDatemin();
+      }
 		}
     else if (testDate.after(sqlDatemax)) {
-			return date.substring(0,5) + getDatemax().substring(5,10);
+      String newDate = date.substring(0,5) + getDatemax().substring(5,10);
+      if (validDate(newDate)) {
+        return newDate;
+      }
+      else {
+        return getDatemax();
+      }
 		}
     else {
 			return date;
