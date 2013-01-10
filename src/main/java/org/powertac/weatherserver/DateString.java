@@ -52,10 +52,11 @@ public class DateString {
 
 	public String getRestString ()
   {
-		return String.format("%02d%02d%02d%04d",
-				date.get(Calendar.HOUR_OF_DAY),
-				date.get(Calendar.DAY_OF_MONTH), date.get(Calendar.MONTH) + 1,
-				date.get(Calendar.YEAR));
+		return String.format("%04d%02d%02d%02d",
+        date.get(Calendar.YEAR),
+        date.get(Calendar.MONTH) + 1,
+        date.get(Calendar.DAY_OF_MONTH),
+        date.get(Calendar.HOUR_OF_DAY));
 	}
 
 	public void shiftBackDay ()

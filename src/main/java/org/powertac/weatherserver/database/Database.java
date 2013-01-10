@@ -125,10 +125,10 @@ public class Database {
 			while (resultSet.next()) {
 				Weather w = new Weather();
 				w.setWeatherDate(resultSet.getString("weatherDate").replace(":00.0",""));
-				w.setTemp(String.valueOf(resultSet.getDouble("temp")));
-				w.setWindDir(String.valueOf(resultSet.getDouble("windDir") % 360));
-				w.setWindSpeed(String.valueOf(resultSet.getDouble("windSpeed")));
-				w.setCloudCover(String.valueOf(resultSet.getString("cloudCover")));
+				w.setTemp(resultSet.getDouble("temp"));
+				w.setWindDir(resultSet.getDouble("windDir") % 360);
+				w.setWindSpeed(resultSet.getDouble("windSpeed"));
+				w.setCloudCover(resultSet.getDouble("cloudCover"));
 				w.setLocation(resultSet.getString("location"));
 				result.add(w);
 			}
@@ -144,7 +144,7 @@ public class Database {
                                         String weatherLocation)
       throws Exception
   {
-		checkDb();
+    checkDb();
 
     if (!validDate(weatherDate)) {
       weatherDate = makeValidDate(weatherDate);
@@ -170,22 +170,24 @@ public class Database {
       List<Weather> rollingAfterAfter  = getWeatherList(
           afterAfterDate.getRestString(), weatherLocation);
 
+      List<Weather> tmpList;
 			Weather[] avgWeather = new Weather[2 * rollingBefore.size()];
 			for (int i = 0; i < rollingBefore.size(); i++) {
-				List<Weather> tmpList = new ArrayList<Weather>();
+				tmpList = new ArrayList<Weather>();
 				tmpList.add(rollingBefore.get(i));
 				tmpList.add(rollingMiddle.get(i));
 				tmpList.add(rollingAfter.get(i));
 				avgWeather[i] = avgReports(tmpList);
 			}
       for (int i = 0; i < rollingBefore.size(); i++) {
-        List<Weather> tmpList = new ArrayList<Weather>();
+        tmpList = new ArrayList<Weather>();
         tmpList.add(rollingMiddle.get(i));
         tmpList.add(rollingAfter.get(i));
         tmpList.add(rollingAfterAfter.get(i));
         avgWeather[rollingBefore.size() + i] = avgReports(tmpList);
       }
 
+      DateString origin = new DateString(weatherDate);
       List<Forecast> result = new ArrayList<Forecast>();
       for (int i = 0; i < 24; i++) {
         double tau0 = Double.parseDouble(prop.getProperty("tau0"));
@@ -195,22 +197,19 @@ public class Database {
           Weather weather = avgWeather[i + j + 1];
 
           Forecast tmpForecast = new Forecast();
+          tmpForecast.setId(j);
           tmpForecast.setLocation(weather.getLocation());
-          tmpForecast.setWeatherDate(weather.getWeatherDate());
-          tmpForecast.setTemp(String.valueOf(
-              Double.parseDouble(weather.getTemp()) * tau0));
-          tmpForecast.setWindDir(String.valueOf(
-              (Double.parseDouble(weather.getWindDir()) * tau0) % 360));
-          tmpForecast.setWindSpeed(String.valueOf(
-              Double.parseDouble(weather.getWindSpeed()) * tau0));
-          tmpForecast.setCloudCover(String.valueOf(
-              Math.min(
-                  1, Math.max(0,
-                      Double.parseDouble(weather.getCloudCover()) * tau0))));
+          tmpForecast.setOrigin(origin.getLocaleString().substring(0, 16));
+          tmpForecast.setTemp(weather.getTemp() * tau0);
+          tmpForecast.setWindDir((weather.getWindDir() * tau0) % 360);
+          tmpForecast.setWindSpeed(weather.getWindSpeed() * tau0);
+          tmpForecast.setCloudCover(Math.min(1, Math.max(0, weather.getCloudCover() * tau0)));
           result.add(tmpForecast);
 
           tau0 = tau0 * ((1.0/sigma - sigma)*Math.random() + sigma);
         }
+
+        origin.shiftAheadHour();
       }
 
 			return result;
@@ -224,7 +223,6 @@ public class Database {
 
 	public List<Energy> getEnergyList (String weatherDate, String weatherLocation)
   {
-		checkDb();
 		return null;
 	}
 	
@@ -241,20 +239,20 @@ public class Database {
 		for (Weather w : weathers) {
 			tmpWeather.setLocation(w.getLocation());
 			
-			newTemp += Double.parseDouble(w.getTemp());
-			newWindDir += Double.parseDouble(w.getWindDir());
-			newWindSpeed += Double.parseDouble(w.getWindSpeed());
-			newCloudCover += Double.parseDouble(w.getCloudCover());
+			newTemp += w.getTemp();
+			newWindDir += w.getWindDir();
+			newWindSpeed += w.getWindSpeed();
+			newCloudCover += w.getCloudCover();
 
       if (Math.floor(weathers.size() / 2) == count++) {
         date = w.getWeatherDate();
       }
 		}
 		
-		tmpWeather.setTemp(String.valueOf(newTemp/weathers.size()));
-		tmpWeather.setWindDir(String.valueOf(newWindDir/weathers.size()));
-		tmpWeather.setWindSpeed(String.valueOf(newWindSpeed/weathers.size()));
-		tmpWeather.setCloudCover(String.valueOf(newCloudCover/weathers.size()));
+		tmpWeather.setTemp(newTemp/weathers.size());
+		tmpWeather.setWindDir(newWindDir/weathers.size());
+		tmpWeather.setWindSpeed(newWindSpeed/weathers.size());
+		tmpWeather.setCloudCover(newCloudCover/weathers.size());
     tmpWeather.setWeatherDate(date);
 
 		return tmpWeather;
@@ -266,7 +264,7 @@ public class Database {
 		Date sqlDatemax = new DateString(getDatemax()).getSqlDate();
 		Date testDate = new DateString(date).getSqlDate();
 
-		return (!testDate.after(sqlDatemax) || !testDate.before(sqlDatemin));
+		return (!testDate.after(sqlDatemax) && !testDate.before(sqlDatemin));
 	}
 	
 	public String makeValidDate (String date)
@@ -276,10 +274,22 @@ public class Database {
 		Date testDate = new DateString(date).getSqlDate();
 		
 		if (testDate.before(sqlDatemin)) {
-			return date.substring(0,5) + getDatemin().substring(5,10);
+      String newDate = date.substring(0,5) + getDatemin().substring(5,10);
+      if (validDate(newDate)) {
+        return newDate;
+      }
+      else {
+        return getDatemin();
+      }
 		}
     else if (testDate.after(sqlDatemax)) {
-			return date.substring(0,5) + getDatemax().substring(5,10);
+      String newDate = date.substring(0,5) + getDatemax().substring(5,10);
+      if (validDate(newDate)) {
+        return newDate;
+      }
+      else {
+        return getDatemax();
+      }
 		}
     else {
 			return date;

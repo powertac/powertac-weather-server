@@ -58,6 +58,12 @@ public class Parser {
 
     if (weatherDate != null && weatherLocation != null) {
       Database db = new Database();
+
+      // Make sure we have a valid date
+      if (!db.validDate(weatherDate)) {
+        weatherDate = db.makeValidDate(weatherDate);
+      }
+
       try {
         if (responseType.equalsIgnoreCase("all")) {
           reports = db.getWeatherList(weatherDate, weatherLocation);
@@ -76,7 +82,7 @@ public class Parser {
       }
       catch (Exception e) {
         // TODO Enable below
-        //e.printStackTrace();
+        e.printStackTrace();
         return "Query Failure";
       }
     }
@@ -107,10 +113,10 @@ public class Parser {
       for (Weather weather: reports) {
         Element weatherReport = doc.createElement("weatherReport");
         weatherReport.setAttribute("date", weather.getWeatherDate());
-        weatherReport.setAttribute("temp", weather.getTemp());
-        weatherReport.setAttribute("windspeed", weather.getWindSpeed());
-        weatherReport.setAttribute("winddir", weather.getWindDir());
-        weatherReport.setAttribute("cloudcover", weather.getCloudCover());
+        weatherReport.setAttribute("temp", weather.getTempString());
+        weatherReport.setAttribute("windspeed", weather.getWindSpeedString());
+        weatherReport.setAttribute("winddir", weather.getWindDirString());
+        weatherReport.setAttribute("cloudcover", weather.getCloudCoverString());
         weatherReport.setAttribute("location", weather.getLocation());
         weatherReports.appendChild(weatherReport);
       }
@@ -121,12 +127,14 @@ public class Parser {
 
       for (Forecast forecast: forecasts) {
         Element weatherForecast = doc.createElement("weatherForecast");
-        weatherForecast.setAttribute("date", forecast.getWeatherDate());
-        weatherForecast.setAttribute("temp", forecast.getTemp());
-        weatherForecast.setAttribute("windspeed", forecast.getWindSpeed());
-        weatherForecast.setAttribute("winddir", forecast.getWindDir());
-        weatherForecast.setAttribute("cloudcover", forecast.getCloudCover());
+        weatherForecast.setAttribute("id", String.valueOf(forecast.getId()));
+        weatherForecast.setAttribute("origin", forecast.getOrigin());
+        weatherForecast.setAttribute("temp", forecast.getTempString());
+        weatherForecast.setAttribute("windspeed", forecast.getWindSpeedString());
+        weatherForecast.setAttribute("winddir", forecast.getWindDirString());
+        weatherForecast.setAttribute("cloudcover", forecast.getCloudCoverString());
         weatherForecast.setAttribute("location", forecast.getLocation());
+        weatherForecast.setAttribute("date", forecast.getWeatherDate());
         weatherForecasts.appendChild(weatherForecast);
       }
 
