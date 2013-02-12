@@ -2,17 +2,16 @@ from datetime import datetime, timedelta
 import MySQLdb
 
 
-LOCATION="rotterdam"
-START_DATE="20090101"   # YYYYMMDD of earliest report
-END_DATE="20111231"     # YYYYMMDD of last report
+LOCATION   = "rotterdam"
+START_DATE = "20090101" # YYYYMMDD of earliest report
+END_DATE   = "20111231" # YYYYMMDD of last report
 
 DB_db    = "localhost"
 DB_table = "powertac_weather"
 DB_user  = "localUsername"
 DB_pass  = "localPassword"
 
-DATA_FILE1 = "uurgeg_344_2001-2010.txt"
-DATA_FILE2 = "uurgeg_344_2011-2020.txt"
+DATA_FILES = ["uurgeg_344_2001-2010.txt", "uurgeg_344_2011-2020.txt"]
 
 INDEXES=[-1]*6
 
@@ -36,6 +35,7 @@ def parse_file(file_name):
     con = MySQLdb.connect(DB_db, DB_user, DB_pass, DB_table)
     cur = con.cursor()
 
+    prev_dir = 0
     started = False
     for line in content:
         if line.startswith("#"):
@@ -54,7 +54,7 @@ def parse_file(file_name):
         dir     = parts[INDEXES[2]]                 # degrees
         speed   = parts[INDEXES[3]]                 # 0.1 m/s
         temp    = parts[INDEXES[4]]                 # 0.1 deg Celsius
-        cover   = parts[INDEXES[5]].strip() or "0"  # 1-9
+        cover   = parts[INDEXES[5]].strip() or "0"  # 0-9
 
         if date < START_DATE or date > END_DATE:
             continue
@@ -66,6 +66,11 @@ def parse_file(file_name):
             speed   = int(speed) / 10.0 
             temp    = int(temp)  / 10.0
             cover   = min(8, int(cover)) / 8.0
+
+            if dir == 0 or dir > 360:
+                dir = prev_dir
+            dir %= 360
+            prev_dir = dir
 
             sql = "INSERT INTO reports (weatherDate, location, "\
                     "temp, windSpeed, windDir, cloudCover) VALUES " \
@@ -91,8 +96,8 @@ def parse_file(file_name):
 
 
 def main():
-    parse_file(DATA_FILE1)
-    parse_file(DATA_FILE2)
+    for file in DATA_FILES:
+        parse_file(file)
 
 
 if __name__ == "__main__":

@@ -29,7 +29,14 @@ public class Rest implements PhaseListener {
 				response.setContentType("text/plain; charset=UTF-8");
 				try {
 					PrintWriter pw = response.getWriter();
-					pw.print(Parser.parseRestRequest(r.getParameterMap()));
+          String[] types = (String[]) r.getParameterMap().get("type");
+          if (types != null && types.length > 0 &&
+              types[0].equals("showLocations")) {
+            pw.print(Parser.parseShowLocationsRequest(r.getParameterMap()));
+          }
+          else {
+            pw.print(Parser.parseRestRequest(r.getParameterMap()));
+          }
 				}
         catch (IOException ex) {
 					throw new FacesException(ex);

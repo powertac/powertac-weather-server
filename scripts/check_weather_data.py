@@ -8,8 +8,8 @@ END_DATE="20111231"     # YYYYMMDD of last report
 
 DB_db    = "localhost"
 DB_table = "powertac_weather"
-DB_user  = "powertac"
-DB_pass  = "powertac"
+DB_user  = "localUsername"
+DB_pass  = "localPassword"
 
 
 def check_location(location):

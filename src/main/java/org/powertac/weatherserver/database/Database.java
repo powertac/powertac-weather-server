@@ -3,6 +3,7 @@ package org.powertac.weatherserver.database;
 import org.powertac.weatherserver.DateString;
 import org.powertac.weatherserver.beans.Energy;
 import org.powertac.weatherserver.beans.Forecast;
+import org.powertac.weatherserver.beans.Location;
 import org.powertac.weatherserver.beans.Weather;
 import org.powertac.weatherserver.constants.Constants;
 
@@ -11,7 +12,9 @@ import javax.faces.bean.RequestScoped;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.sql.*;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.Properties;
 
@@ -44,6 +47,7 @@ public class Database {
 	// Database Configurations
 	private Connection conn = null;
 	private PreparedStatement weatherStatement = null;
+  private PreparedStatement forecastStatement = null;
 	Properties connectionProps = new Properties();
 	Properties prop = new Properties();
 
@@ -100,8 +104,32 @@ public class Database {
 		}
 	}
 
+  public List<Location> getLocationList () throws Exception
+  {
+    checkDb();
+
+    List<Location> result = new ArrayList<Location>();
+
+    PreparedStatement statement = conn.prepareStatement(
+        String.format(Constants.DB_AVAILABLE_LOCATIONS));
+
+    ResultSet resultSet = statement.executeQuery();
+    while (resultSet.next()) {
+      Location location = new Location();
+      location.setLocationName(resultSet.getString("location"));
+      location.setMaxDate(resultSet.getString("maxDate").replace(":00.0",""));
+      location.setMinDate(resultSet.getString("minDate").replace(":00.0",""));
+      result.add(location);
+    }
+    conn.close();
+
+    return result;
+  }
+
+
 	public List<Weather> getWeatherList(String weatherDate, String location)
-      throws Exception {
+      throws Exception
+  {
 		checkDb();
 
 		if (weatherStatement == null || weatherStatement.isClosed()) {
@@ -141,7 +169,7 @@ public class Database {
 	}
 
 	public List<Forecast> getForecastList(String weatherDate,
-                                        String weatherLocation)
+                                        String location)
       throws Exception
   {
     checkDb();
@@ -149,8 +177,8 @@ public class Database {
     if (!validDate(weatherDate)) {
       weatherDate = makeValidDate(weatherDate);
     }
-		
-		// Procedural implementation does a trend based random walk
+
+    // Procedural implementation does a trend based random walk
 		if (implementation.equals("procedural")) {
 			DateString beforeDate = new DateString(weatherDate);
 			DateString afterDate = new DateString(weatherDate);
@@ -162,13 +190,13 @@ public class Database {
       afterAfterDate.shiftAheadDay();
 
 			List<Weather> rollingBefore = getWeatherList(
-          beforeDate.getRestString(), weatherLocation);
+          beforeDate.getRestString(), location);
 			List<Weather> rollingMiddle = getWeatherList(
-          weatherDate, weatherLocation);
+          weatherDate, location);
 			List<Weather> rollingAfter  = getWeatherList(
-          afterDate.getRestString(), weatherLocation);
+          afterDate.getRestString(), location);
       List<Weather> rollingAfterAfter  = getWeatherList(
-          afterAfterDate.getRestString(), weatherLocation);
+          afterAfterDate.getRestString(), location);
 
       List<Weather> tmpList;
 			Weather[] avgWeather = new Weather[2 * rollingBefore.size()];
@@ -187,26 +215,32 @@ public class Database {
         avgWeather[rollingBefore.size() + i] = avgReports(tmpList);
       }
 
+      double sigma = Double.parseDouble(prop.getProperty("sigma"));
       DateString origin = new DateString(weatherDate);
       List<Forecast> result = new ArrayList<Forecast>();
       for (int i = 0; i < 24; i++) {
-        double tau0 = Double.parseDouble(prop.getProperty("tau0"));
-        double sigma = Double.parseDouble(prop.getProperty("sigma"));
+        double tau0Temp = Double.parseDouble(prop.getProperty("tau0"));
+        double tau0Dir = Double.parseDouble(prop.getProperty("tau0"));
+        double tau0Speed = Double.parseDouble(prop.getProperty("tau0"));
+        double tau0Cloud = Double.parseDouble(prop.getProperty("tau0"));
 
         for (int j = 0; j < 24; j++) {
+          tau0Temp  = tau0Temp  * ((1.0/sigma - sigma) * Math.random() + sigma);
+          tau0Dir   = tau0Dir   * ((1.0/sigma - sigma) * Math.random() + sigma);
+          tau0Speed = tau0Speed * ((1.0/sigma - sigma) * Math.random() + sigma);
+          tau0Cloud = tau0Cloud * ((1.0/sigma - sigma) * Math.random() + sigma);
+
           Weather weather = avgWeather[i + j + 1];
 
           Forecast tmpForecast = new Forecast();
           tmpForecast.setId(j);
-          tmpForecast.setLocation(weather.getLocation());
+          tmpForecast.setLocation(location);
           tmpForecast.setOrigin(origin.getLocaleString().substring(0, 16));
-          tmpForecast.setTemp(weather.getTemp() * tau0);
-          tmpForecast.setWindDir((weather.getWindDir() * tau0) % 360);
-          tmpForecast.setWindSpeed(weather.getWindSpeed() * tau0);
-          tmpForecast.setCloudCover(Math.min(1, Math.max(0, weather.getCloudCover() * tau0)));
+          tmpForecast.setTemp(weather.getTemp() * tau0Temp);
+          tmpForecast.setWindSpeed(weather.getWindSpeed() * tau0Speed);
+          tmpForecast.setWindDir((weather.getWindDir() * tau0Dir) % 360);
+          tmpForecast.setCloudCover(Math.min(1, Math.max(0, weather.getCloudCover() * tau0Cloud)));
           result.add(tmpForecast);
-
-          tau0 = tau0 * ((1.0/sigma - sigma)*Math.random() + sigma);
         }
 
         origin.shiftAheadHour();
@@ -214,8 +248,47 @@ public class Database {
 
 			return result;
 		}
-    else {
-			// TODO: Implement database query for empirical data
+    else if (implementation.equals("database")) {
+      if (forecastStatement == null || forecastStatement.isClosed()) {
+        forecastStatement = conn.prepareStatement(
+            String.format(Constants.DB_SELECT_FORECAST, forecastTable));
+      }
+
+      if (!getLocations().contains(location) || !validDate(weatherDate)) {
+        return null;
+      }
+      forecastStatement.setString(1, new DateString(weatherDate)
+          .getLocaleString());
+      forecastStatement.setString(2, location);
+
+      SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:00.0");
+
+      List<Forecast> result = new ArrayList<Forecast>();
+      ResultSet resultSet = forecastStatement.executeQuery();
+      while (resultSet.next()) {
+        long diff = sdf.parse(resultSet.getString("weatherDate")).getTime() -
+            sdf.parse(resultSet.getString("origin")).getTime();
+
+        Forecast tmpForecast = new Forecast();
+        tmpForecast.setId((int) diff / (1000 * 60 * 60) - 1);
+        tmpForecast.setLocation(location);
+        tmpForecast.setWeatherDate
+            (resultSet.getString("weatherDate").replace(":00.0", ""));
+        tmpForecast.setOrigin(
+            resultSet.getString("origin").replace(":00.0", ""));
+        tmpForecast.setTemp(Double.parseDouble(resultSet.getString("temp")));
+        tmpForecast.setWindSpeed(
+            Double.parseDouble(resultSet.getString("windspeed")));
+        tmpForecast.setWindDir(
+            Double.parseDouble(resultSet.getString("windDir")));
+        tmpForecast.setCloudCover(
+            Double.parseDouble(resultSet.getString("cloudcover")));
+
+        result.add(tmpForecast);
+      }
+      conn.close();
+
+      return result;
 		}
 		
 		return null;

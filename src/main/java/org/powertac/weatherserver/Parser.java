@@ -2,6 +2,7 @@ package org.powertac.weatherserver;
 
 import org.powertac.weatherserver.beans.Energy;
 import org.powertac.weatherserver.beans.Forecast;
+import org.powertac.weatherserver.beans.Location;
 import org.powertac.weatherserver.beans.Weather;
 import org.powertac.weatherserver.constants.Constants;
 import org.powertac.weatherserver.database.Database;
@@ -81,7 +82,6 @@ public class Parser {
         }*/
       }
       catch (Exception e) {
-        // TODO Enable below
         e.printStackTrace();
         return "Query Failure";
       }
@@ -166,6 +166,48 @@ public class Parser {
     }
 
     return "Query Failure";
+  }
+
+  public static String parseShowLocationsRequest (Map<?, ?> params)
+  {
+    List<Location> locations;
+    Database db = new Database();
+    try {
+      locations = db.getLocationList();
+    }
+    catch (Exception ignored) {
+      return "Query Failure";
+    }
+
+    try {
+      DocumentBuilderFactory docFactory = DocumentBuilderFactory.newInstance();
+      DocumentBuilder docBuilder = docFactory.newDocumentBuilder();
+
+      Document doc = docBuilder.newDocument();
+      doc.setXmlStandalone(true);
+      Element rootElement = doc.createElement("locations");
+      doc.appendChild(rootElement);
+
+      for (Location location: locations) {
+        Element element = doc.createElement("location");
+        rootElement.appendChild(element);
+        element.setAttribute("name", location.getLocationName());
+        element.setAttribute("minDate", location.getMinDate());
+        element.setAttribute("maxDate", location.getMaxDate());
+      }
+
+      TransformerFactory transFactory = TransformerFactory.newInstance();
+      Transformer transformer = transFactory.newTransformer();
+      transformer.setOutputProperty(OutputKeys.INDENT, "yes");
+      StringWriter buffer = new StringWriter();
+      transformer.transform(new DOMSource(doc), new StreamResult(buffer));
+
+      return buffer.toString();
+    }
+    catch (Exception e) {
+      e.printStackTrace();
+      return "Query Failure";
+    }
   }
 
   public static String parseOptionsRequest (Map<?, ?> params)

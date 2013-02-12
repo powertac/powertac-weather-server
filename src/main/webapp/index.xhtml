@@ -2,56 +2,61 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" 
 "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml"
-	xmlns:h="http://java.sun.com/jsf/html"
-	xmlns:ui="http://java.sun.com/jsf/facelets"
-	xmlns:f="http://java.sun.com/jsf/core">
+  xmlns:t="http://myfaces.apache.org/tomahawk">
 
 <metadata xmlns="http://java.sun.com/jsf/core">
   <event type="preRenderView" listener="#{rest.respond}"/>
 </metadata>
 
 <head>
-<title>Powertac 2012 WeatherServer</title>
+  <title>Powertac 2012 WeatherServer</title>
 </head>
 
 <body>
 	<h2>Weather Server REST API Page</h2>
 
-		<p>For the weather service module in PowerTac Server this provides
-			a RESTful interface to request weather. This page contains the
-			specification for the api.</p>
-		<br />
-		<b>REST Specification</b>
-		<p>
-			To make REST calls on the Weather Server, you will use the
-			index.xhtml page, as the example below: <br />
-			<blockquote>
-				<i>http://url.to.weather.server:8080/WeatherServer/faces/index.xhtml?weatherDate=2009030102&amp;weatherLocation=rotterdam</i>
-			</blockquote>
+  <p>For the weather service module in PowerTac Server this provides
+    a RESTful interface to request weather. This page contains the
+    specification for the api.</p>
+  <br />
+  <b>REST Specification</b>
+  <p>
+    To make REST calls on the Weather Server, you will use the
+    index.xhtml page, as the example below: <br />
+    <blockquote>
+      <i>http://url.to.weather.server:8080/WeatherServer/faces/index.xhtml?weatherDate=2009030102&amp;weatherLocation=rotterdam</i>
+    </blockquote>
 
-			<br /> Required Parameters: <br />
-			<ul>
+    <br /> Required Parameters: <br />
+    <ul>
       <li><b>weatherDate={date-of-specific-weather-record}</b><br/>
         This allows you to specify the date or record id of weather data
         that you want.<br/>
         The weatherDate parameter is the date in the following
-          format [yyyymmddhh]</li>
+        format [yyyymmddhh]</li>
 
       <li><b>weatherLocation={location-string-for-weather-of-a-region}<br/></b>
         This allows you to specify the location you wish to receive
-				weather. This parameter is the name of the location as a string.</li>
-			</ul>
-      <!-- ignored for now
-			Optional Parameters: <br />
-			<ul>
-				<li><b>type=<i>{report|forecast|energy}</i></b> - Specify the
-					data you wish the Weather Server to respond with for this REST
-					call. The data is packaged in xml. The "report" type will give only
-					weather reports, the "forecast" type will only give weather
-					forecasts, and the "energy" type will give only energy bid reports.
-					If this parameter is not specified, all three types are given.</li>
-			</ul>
-			-->
-		</p>
+        weather. This parameter is the name of the location as a string.</li>
+    </ul>
+    <!-- ignored for now
+    Optional Parameters: <br />
+    <ul>
+      <li><b>type=<i>{report|forecast|energy}</i></b> - Specify the
+        data you wish the Weather Server to respond with for this REST
+        call. The data is packaged in xml. The "report" type will give only
+        weather reports, the "forecast" type will only give weather
+        forecasts, and the "energy" type will give only energy bid reports.
+        If this parameter is not specified, all three types are given.</li>
+    </ul>
+    -->
+  </p>
+
+  <br />
+  <b>Available locations : </b>
+  <br />
+  <t:dataList value="#{actionIndex.getLocationList()}" layout="unorderedList" var="location" >
+    <t:outputText value="#{location}" />
+  </t:dataList>
 </body>
 </html>

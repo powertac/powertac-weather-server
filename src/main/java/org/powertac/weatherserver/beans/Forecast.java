@@ -25,13 +25,13 @@ public class Forecast extends Weather {
   @Override
   public String getWeatherDate() {
     try {
-      SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd hh:mm");
+      SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm");
       Calendar c = Calendar.getInstance();
       c.setTime(sdf.parse(origin));
       c.add(Calendar.HOUR, 1 + id);
       return sdf.format(c.getTime());
     } catch (Exception ignored) {
-      return "eikel";
+      return "";
     }
   }
 }

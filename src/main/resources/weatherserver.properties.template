@@ -18,7 +18,6 @@ publicDateMax = 2011123123
 # [procedural|database]
 # The procedural type creates forecast information via a trend based random walk
 # The database type performs the sql query agains the specified database table
-# Prod = procedural
 implementation = procedural
 # Tau_0 is our initial offset from the data (only used if procedural)
 tau0 = 1.0
