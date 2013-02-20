@@ -35,66 +35,70 @@ public class Parser {
       return "Error null params";
     }
 
-    //String[] responseTypeArray = (String[]) params.get(Constants.REQ_PARAM_TYPE);
-    String[] weatherDateArray = (String[]) params.get(Constants.REQ_PARAM_WEATHER_DATE);
-    String[] weatherLocationArray = (String []) params.get(Constants.REQ_PARAM_WEATHER_LOCATION);
+    String[] responseTypeArray =
+        (String[]) params.get(Constants.REQ_PARAM_TYPE);
+    String[] weatherDateArray =
+        (String[]) params.get(Constants.REQ_PARAM_WEATHER_DATE);
+    String[] weatherLocationArray =
+        (String []) params.get(Constants.REQ_PARAM_WEATHER_LOCATION);
 
     String responseType = "all";
-    String weatherDate = "default";
-    String weatherLocation = "default";
+    WeatherDate weatherDate = null;
+    Location weatherLocation = null;
 
-    //if(responseTypeArray != null){
-    //	responseType = responseTypeArray[0];
-    //}
-    if (weatherLocationArray != null) {
-      weatherLocation = weatherLocationArray[0];
+    if (responseTypeArray != null) {
+      responseType = responseTypeArray[0];
     }
     if (weatherDateArray != null) {
-      weatherDate = weatherDateArray[0];
+      weatherDate = new WeatherDate(weatherDateArray[0], true);
+    }
+    if (weatherLocationArray != null) {
+      weatherLocation = new Location(weatherLocationArray[0]);
     }
 
     List<Weather> reports = new ArrayList<Weather>();
     List<Forecast> forecasts = new ArrayList<Forecast>();
     List<Energy> energys = new ArrayList<Energy>();
 
-    if (weatherDate != null && weatherLocation != null) {
-      Database db = new Database();
-
-      // Make sure we have a valid date
-      if (!db.validDate(weatherDate)) {
-        weatherDate = db.makeValidDate(weatherDate);
+    Database db = new Database();
+    try {
+      if (responseType.equalsIgnoreCase("all")) {
+        reports = db.getWeatherList(weatherDate, weatherLocation);
+        forecasts = db.getForecastList(weatherDate, weatherLocation);
+        energys = db.getEnergyList(weatherDate, weatherLocation);
+        if (reports.isEmpty() || forecasts.isEmpty()) {
+          return "Query Failure";
+        }
       }
-
-      try {
-        if (responseType.equalsIgnoreCase("all")) {
-          reports = db.getWeatherList(weatherDate, weatherLocation);
-          forecasts = db.getForecastList(weatherDate, weatherLocation);
-          //energy = db.getEnergyList(weatherDate, weatherLocation);
+      else if (responseType.equalsIgnoreCase("report")) {
+        reports = db.getWeatherList(weatherDate, weatherLocation);
+        if (reports.isEmpty()) {
+          return "Query Failure";
         }
-        /*else if(responseType.equalsIgnoreCase("report")) {
-          reports = db.getWeatherList(weatherDate, weatherLocation);
-        }
-        else if(responseType.equalsIgnoreCase("forecast")) {
-          forecasts = db.getForecastList(weatherDate, weatherLocation);
-        }
-        else if(responseType.equalsIgnoreCase("energy")) {
-          energy = db.getEnergyList(weatherDate, weatherLocation);
-        }*/
       }
-      catch (Exception e) {
-        e.printStackTrace();
-        return "Query Failure";
+      else if (responseType.equalsIgnoreCase("forecast")) {
+        forecasts = db.getForecastList(weatherDate, weatherLocation);
+        if (forecasts.isEmpty()) {
+          return "Query Failure";
+        }
+      }
+      else if (responseType.equalsIgnoreCase("energy")) {
+        energys = db.getEnergyList(weatherDate, weatherLocation);
+        if (energys.isEmpty()) {
+          return "Query Failure";
+        }
       }
     }
-
-    if (reports.isEmpty() || forecasts.isEmpty()) {
+    catch (Exception e) {
       return "Query Failure";
     }
+
     return createXML(reports, forecasts, energys);
 	}
 
   private static String createXML (List<Weather> reports,
-                                 List<Forecast> forecasts, List<Energy> energys)
+                                   List<Forecast> forecasts,
+                                   List<Energy> energys)
   {
     try {
       DocumentBuilderFactory docFactory = DocumentBuilderFactory.newInstance();
@@ -171,9 +175,8 @@ public class Parser {
   public static String parseShowLocationsRequest (Map<?, ?> params)
   {
     List<Location> locations;
-    Database db = new Database();
     try {
-      locations = db.getLocationList();
+      locations = Location.getAvailableLocations();
     }
     catch (Exception ignored) {
       return "Query Failure";

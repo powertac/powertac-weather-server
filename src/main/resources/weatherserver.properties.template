@@ -9,11 +9,10 @@ db.password = localPassword
 
 # Configuration Related properties
 
-# public locations and dates
-# comma delimited locations
+# public locations (comma delimited) and dates (yyyymmddhh)
 publicLocations = rotterdam
 publicDateMin = 2009010100
-publicDateMax = 2011123123
+publicDateMax = 2011122923
 
 # [procedural|database]
 # The procedural type creates forecast information via a trend based random walk

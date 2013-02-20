@@ -1,3 +1,8 @@
+"""
+This script imports the data from KNMI text files defined in DATA_FILES.
+You need to setup the DB before
+"""
+
 from datetime import datetime, timedelta
 import MySQLdb
 

@@ -1,17 +1,69 @@
-/**
- * Created by IntelliJ IDEA.
- * User: govert
- * Date: 2/4/13
- * Time: 5:47 PM
- */
-
 package org.powertac.weatherserver.beans;
+
+import org.powertac.weatherserver.database.Database;
+import org.powertac.weatherserver.Properties;
+
+import java.util.ArrayList;
+import java.util.List;
+
 
 public class Location
 {
-  String locationName;
-  String minDate;
-  String maxDate;
+  private String locationName = "";
+  private String minDate = "";
+  private String maxDate = "";
+
+  private static Properties properties = new Properties();
+  private static List<String> allowedLocations = null;
+  private static List<Location> availableLocations = null;
+
+  public Location ()
+  {
+  }
+
+  public Location (String locationName)
+  {
+    if (getAllowedLocations().contains(locationName)) {
+      this.locationName = locationName;
+    }
+    else {
+      if (getAllowedLocations().size() > 0) {
+        this.locationName = Location.getAllowedLocations().get(0);
+      }
+      else {
+        this.locationName = "";
+      }
+    }
+  }
+
+  public static List<Location> getAvailableLocations ()
+  {
+    if (availableLocations == null) {
+      try {
+        Database db = new Database();
+        availableLocations = db.getLocationList();
+      }
+      catch (Exception e) {
+        e.printStackTrace();
+      }
+    }
+
+    return availableLocations;
+  }
+
+  public static List<String> getAllowedLocations ()
+  {
+    if (allowedLocations == null || allowedLocations.isEmpty()) {
+      allowedLocations = new ArrayList<String>();
+
+      String locationsString = properties.getProperty("publicLocations");
+      for (String s: locationsString.split(",")) {
+        allowedLocations.add(s.trim());
+      }
+    }
+
+    return allowedLocations;
+  }
 
   public String getLocationName ()
   {

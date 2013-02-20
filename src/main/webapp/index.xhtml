@@ -27,7 +27,9 @@
       <i>http://url.to.weather.server:8080/WeatherServer/faces/index.xhtml?weatherDate=2009030102&amp;weatherLocation=rotterdam</i>
     </blockquote>
 
-    <br /> Required Parameters: <br />
+    <br />
+    <b>Required Parameters : </b>
+    <br />
     <ul>
       <li><b>weatherDate={date-of-specific-weather-record}</b><br/>
         This allows you to specify the date or record id of weather data
@@ -55,7 +57,8 @@
   <br />
   <b>Available locations : </b>
   <br />
-  <t:dataList value="#{actionIndex.getLocationList()}" layout="unorderedList" var="location" >
+  <t:dataList value="#{actionIndex.getLocationList()}"
+              layout="unorderedList" var="location" >
     <t:outputText value="#{location}" />
   </t:dataList>
 </body>

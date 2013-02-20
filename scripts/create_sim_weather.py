@@ -1,3 +1,8 @@
+"""
+This script produces a weatherfile for running an offline or repeated sim
+"""
+
+
 from datetime import datetime, timedelta
 import urllib
 import sys
@@ -13,7 +18,7 @@ BASE_URL = "http://wolf-08.fbk.eur.nl:8080/"\
 
 
 def parse_start_date():
-    if len(sys .argv) == 1:
+    if len(sys.argv) == 1:
         print "\nYou need to give the start date"
         print "The format is yyyymmdd\n"
         return

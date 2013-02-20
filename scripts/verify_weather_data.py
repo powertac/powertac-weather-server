@@ -1,10 +1,15 @@
+"""
+This script checks if all dates are filled in the 'reports' table,
+for the given locations and periods
+"""
+
 from datetime import datetime, timedelta
 import MySQLdb
 
 
-LOCATIONS=["rotterdam"]
-START_DATE="20090101"   # YYYYMMDD of earliest report
-END_DATE="20111231"     # YYYYMMDD of last report
+LOCATIONS  = ["rotterdam"]
+START_DATE = "20090101"     # YYYYMMDD of earliest report
+END_DATE   = "20111231"     # YYYYMMDD of last report
 
 DB_db    = "localhost"
 DB_table = "powertac_weather"

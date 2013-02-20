@@ -1,7 +1,6 @@
 package org.powertac.weatherserver;
 
 import org.powertac.weatherserver.beans.Location;
-import org.powertac.weatherserver.database.Database;
 
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.RequestScoped;
@@ -20,9 +19,8 @@ public class ActionIndex
   public List<String> getLocationList()
   {
     List<Location> locations = new ArrayList<Location>();
-    Database db = new Database();
     try {
-      locations = db.getLocationList();
+      locations = Location.getAvailableLocations();
     }
     catch (Exception ignored) {}
 
