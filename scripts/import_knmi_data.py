@@ -34,8 +34,11 @@ def get_indexes(line):
 
 
 def parse_file(file_name):
-    with open(file_name) as f: 
+    f = open(file_name, 'r')
+    try:
         content = f.readlines()
+    finally:
+        f.close()
 
     con = MySQLdb.connect(DB_db, DB_user, DB_pass, DB_table)
     cur = con.cursor()

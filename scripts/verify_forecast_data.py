@@ -204,7 +204,7 @@ def verify_data():
 
 
 def main():
-    #check_all_dates()
+    check_all_dates()
     verify_data()
 
 if __name__ == "__main__":
