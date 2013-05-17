@@ -60,6 +60,13 @@ public class Parser {
     List<Forecast> forecasts = new ArrayList<Forecast>();
     List<Energy> energys = new ArrayList<Energy>();
 
+    // TODO Remove below
+    if (weatherLocation != null && weatherLocation.getLocationName() != null &&
+        weatherDate != null && weatherDate.getMediumString() != null) {
+      System.out.println(String.format("\nRequest for : %s %s\n",
+          weatherLocation.getLocationName(), weatherDate.getMediumString()));
+    }
+
     Database db = new Database();
     try {
       if (responseType.equalsIgnoreCase("all")) {
@@ -91,6 +98,9 @@ public class Parser {
     }
     catch (Exception e) {
       return "Query Failure";
+    }
+    finally {
+      db.close();
     }
 
     return createXML(reports, forecasts, energys);

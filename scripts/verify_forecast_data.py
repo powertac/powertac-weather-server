@@ -17,7 +17,7 @@ LOCATION   = "rotterdam"
 START_DATE = "20090101" # YYYYMMDD of earliest report
 END_DATE   = "20111229" # YYYYMMDD of last report
 
-BASE_URL = "http://localhost:8080/WeatherServer/faces/index.xhtml"\
+BASE_URL = "http://wolf-08.fbk.eur.nl:8080/WeatherServer/faces/index.xhtml"\
            "?weatherDate=%s&weatherLocation=%s"
 
 RANGE_24 = range(24)

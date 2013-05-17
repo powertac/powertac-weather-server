@@ -39,12 +39,15 @@ public class Location
   public static List<Location> getAvailableLocations ()
   {
     if (availableLocations == null) {
+      Database db = new Database();
       try {
-        Database db = new Database();
         availableLocations = db.getLocationList();
       }
       catch (Exception e) {
         e.printStackTrace();
+      }
+      finally {
+        db.close();
       }
     }
 

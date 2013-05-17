@@ -26,6 +26,7 @@ public class Database {
 
 	public Database ()
   {
+    checkDb();
 	}
 
 	private void checkDb() {
@@ -51,6 +52,18 @@ public class Database {
 		}
 	}
 
+  public void close ()
+  {
+    try {
+      if (conn != null && !conn.isClosed()) {
+        conn.close();
+      }
+    }
+    catch (Exception e) {
+      e.printStackTrace();
+    }
+  }
+
   public List<Location> getLocationList () throws Exception
   {
     checkDb();
@@ -71,7 +84,6 @@ public class Database {
       location.setMinDate(min.getMediumString());
       result.add(location);
     }
-    conn.close();
 
     return result;
   }
@@ -106,7 +118,6 @@ public class Database {
       w.setLocation(resultSet.getString("location"));
       result.add(w);
     }
-    conn.close();
     return result;
 	}
 
@@ -230,8 +241,6 @@ public class Database {
 
       result.add(tmpForecast);
     }
-    conn.close();
-
     return result;
   }
 

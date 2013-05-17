@@ -95,7 +95,7 @@ def parse_file(file_name):
             con.commit()
         except MySQLdb.IntegrityError, e:
             pass
-        except Exception as e:
+        except Exception, e:
             print
             print e
             print sql
