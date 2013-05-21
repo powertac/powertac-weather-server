@@ -27,7 +27,9 @@ import java.util.Map;
 
 @ManagedBean
 @RequestScoped
-public class Parser {
+public class Parser
+{
+  private static Properties properties = new Properties();
 
 	public static String parseRestRequest (Map<?, ?> params)
   {
@@ -35,38 +37,37 @@ public class Parser {
       return "Error null params";
     }
 
-    String[] responseTypeArray =
-        (String[]) params.get(Constants.REQ_PARAM_TYPE);
-    String[] weatherDateArray =
-        (String[]) params.get(Constants.REQ_PARAM_WEATHER_DATE);
-    String[] weatherLocationArray =
-        (String []) params.get(Constants.REQ_PARAM_WEATHER_LOCATION);
-
     String responseType = "all";
-    WeatherDate weatherDate = null;
-    Location weatherLocation = null;
-
+    String[] responseTypeArray =
+        (String[]) params.get(Constants.Rest.REQ_PARAM_TYPE);
     if (responseTypeArray != null) {
       responseType = responseTypeArray[0];
     }
+
+    WeatherDate weatherDate = null;
+    String[] weatherDateArray =
+        (String[]) params.get(Constants.Rest.REQ_PARAM_WEATHER_DATE);
     if (weatherDateArray != null) {
       weatherDate = new WeatherDate(weatherDateArray[0], true);
     }
+
+    Location weatherLocation = null;
+    String[] weatherLocationArray =
+        (String []) params.get(Constants.Rest.REQ_PARAM_WEATHER_LOCATION);
     if (weatherLocationArray != null) {
       weatherLocation = new Location(weatherLocationArray[0]);
+    }
+
+    if (Boolean.parseBoolean(properties.getProperty("showRequestInLog")) &&
+        weatherLocation != null && weatherLocation.getLocationName() != null &&
+        weatherDate != null && weatherDate.getMediumString() != null) {
+      System.out.println(String.format("\nRequestt for : %s %s\n",
+          weatherLocation.getLocationName(), weatherDate.getMediumString()));
     }
 
     List<Weather> reports = new ArrayList<Weather>();
     List<Forecast> forecasts = new ArrayList<Forecast>();
     List<Energy> energys = new ArrayList<Energy>();
-
-    // TODO Remove below
-    if (weatherLocation != null && weatherLocation.getLocationName() != null &&
-        weatherDate != null && weatherDate.getMediumString() != null) {
-      System.out.println(String.format("\nRequest for : %s %s\n",
-          weatherLocation.getLocationName(), weatherDate.getMediumString()));
-    }
-
     Database db = new Database();
     try {
       if (responseType.equalsIgnoreCase("all")) {

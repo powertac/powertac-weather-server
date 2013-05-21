@@ -71,7 +71,7 @@ public class Database {
     List<Location> result = new ArrayList<Location>();
 
     PreparedStatement statement = conn.prepareStatement(
-        String.format(Constants.DB_AVAILABLE_LOCATIONS));
+        String.format(Constants.DB.AVAILABLE_LOCATIONS));
 
     ResultSet resultSet = statement.executeQuery();
     while (resultSet.next()) {
@@ -88,20 +88,20 @@ public class Database {
     return result;
   }
 
-	public List<Weather> getWeatherList(WeatherDate weatherDate,
-                                      Location location)
+	public List<Weather> getWeatherList (WeatherDate weatherDate,
+                                       Location location)
       throws Exception
   {
 		checkDb();
 
 		if (weatherStatement == null || weatherStatement.isClosed()) {
 			weatherStatement = conn.prepareStatement(
-          String.format(Constants.DB_SELECT_REPORT,
+          String.format(Constants.DB.SELECT_REPORT,
               properties.getProperty("reportTable")));
 		}
 
-    weatherStatement.setString(1, weatherDate.getFullString());
-    weatherStatement.setString(2, location.getLocationName());
+    weatherStatement.setString(1, location.getLocationName());
+    weatherStatement.setString(2, weatherDate.getFullString());
 
     ResultSet resultSet = weatherStatement.executeQuery();
 
@@ -115,14 +115,14 @@ public class Database {
       w.setWindDir(resultSet.getDouble("windDir") % 360);
       w.setWindSpeed(resultSet.getDouble("windSpeed"));
       w.setCloudCover(resultSet.getDouble("cloudCover"));
-      w.setLocation(resultSet.getString("location"));
+      w.setLocation(location.getLocationName());
       result.add(w);
     }
     return result;
 	}
 
-	public List<Forecast> getForecastList(WeatherDate weatherDate,
-                                        Location location)
+	public List<Forecast> getForecastList (WeatherDate weatherDate,
+                                         Location location)
       throws Exception
   {
 		if (properties.getProperty("implementation").equals("procedural")) {
@@ -135,8 +135,8 @@ public class Database {
 		return null;
 	}
 
-  private List<Forecast> getForecastListProcedural(WeatherDate weatherDate,
-                                                   Location location)
+  private List<Forecast> getForecastListProcedural (WeatherDate weatherDate,
+                                                    Location location)
       throws Exception
   {
     // Procedural implementation does a trend based random walk
@@ -203,20 +203,20 @@ public class Database {
     return result;
   }
 
-  private List<Forecast> getForecastListDatabase(WeatherDate weatherDate,
-                                                 Location location)
+  private List<Forecast> getForecastListDatabase (WeatherDate weatherDate,
+                                                  Location location)
       throws Exception
   {
     checkDb();
 
     if (forecastStatement == null || forecastStatement.isClosed()) {
       forecastStatement = conn.prepareStatement(
-          String.format(Constants.DB_SELECT_FORECAST,
+          String.format(Constants.DB.SELECT_FORECAST,
               properties.getProperty("forecastTable")));
     }
 
-    forecastStatement.setString(1, weatherDate.getFullString());
-    forecastStatement.setString(2, location.getLocationName());
+    forecastStatement.setString(1, location.getLocationName());
+    forecastStatement.setString(2, weatherDate.getFullString());
 
     List<Forecast> result = new ArrayList<Forecast>();
     ResultSet resultSet = forecastStatement.executeQuery();

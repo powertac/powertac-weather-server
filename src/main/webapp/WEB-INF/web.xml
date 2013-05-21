@@ -4,7 +4,6 @@
 	id="YourProjectName" version="3.0">
 	<display-name>WeatherServer</display-name>
 
-
 	<!-- End Spring -->
 	<context-param>
 		<description>
@@ -21,7 +20,6 @@
 		<param-name>javax.faces.PROJECT_STAGE</param-name>
 		<param-value>Development</param-value>
 	</context-param>
-
 
 	<context-param>
 		<param-name>org.apache.myfaces.USE_ENCRYPTION</param-name>

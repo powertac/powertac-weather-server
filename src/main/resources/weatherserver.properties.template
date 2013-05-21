@@ -27,3 +27,5 @@ sigma = .95
 reportTable = reports
 forecastTable = forecasts
 energyTable = energy
+
+showRequestInLog = false

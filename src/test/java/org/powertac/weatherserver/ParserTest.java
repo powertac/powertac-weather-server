@@ -1,23 +1,15 @@
 package org.powertac.weatherserver;
 
-import static org.junit.Assert.*;
-
-import java.util.HashMap;
-import java.util.Map;
-
-import javax.faces.bean.ManagedBean;
-import javax.faces.context.FacesContext;
-
 import org.junit.Test;
-import org.powertac.weatherserver.database.Database;
+
+import static org.junit.Assert.assertEquals;
 
 
 public class ParserTest {
-		
-
 	@Test
 	public void testNullParams() {
-		assertEquals("Parser needs to return correct error", "Error null params",Parser.parseRestRequest(null));
+		assertEquals("Parser needs to return correct error",
+        "Error null params", Parser.parseRestRequest(null));
 	}
 	
 	@Test
@@ -30,7 +22,6 @@ public class ParserTest {
 		String result = Parser.parseRestRequest(params);
 		assertTrue("weatherReports xml root not present",result.indexOf("<weatherReports>")>0);
 		*/
-				
 	}
 
 }

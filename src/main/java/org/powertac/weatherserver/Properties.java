@@ -5,7 +5,7 @@ import java.io.IOException;
 
 public class Properties
 {
-  private String resourceName = "weatherserver.properties";
+  private static String resourceName = "weatherserver.properties";
   private static java.util.Properties properties = new java.util.Properties();
   private static boolean loaded = false;
 
