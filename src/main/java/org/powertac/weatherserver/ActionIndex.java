@@ -22,9 +22,16 @@ public class ActionIndex
     try {
       locations = Location.getAvailableLocations();
     }
-    catch (Exception ignored) {}
+    catch (Exception e) {
+      e.printStackTrace();
+    }
 
     List<String> result = new ArrayList<String>();
+
+    if (locations == null || locations.size() == 0) {
+      return result;
+    }
+
     for (Location location: locations) {
       result.add(String.format("%s : %s - %s",
           location.getLocationName(),

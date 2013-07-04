@@ -244,7 +244,6 @@ public class Database {
     return result;
   }
 
-
 	public List<Energy> getEnergyList (WeatherDate weatherDate,
                                      Location weatherLocation)
   {
@@ -283,5 +282,5 @@ public class Database {
     tmpWeather.setWeatherDate(date);
 
 		return tmpWeather;
-	}
+  }
 }

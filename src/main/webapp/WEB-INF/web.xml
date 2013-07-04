@@ -57,6 +57,10 @@
 		<session-timeout>30</session-timeout>
 	</session-config>
 
+  <listener>
+    <listener-class>org.powertac.weatherserver.listeners.Initializer</listener-class>
+  </listener>
+
 	<filter>
 		<filter-name>ExtensionsFilter</filter-name>
 		<filter-class>org.apache.myfaces.webapp.filter.ExtensionsFilter</filter-class>

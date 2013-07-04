@@ -61,7 +61,7 @@ public class Parser
     if (Boolean.parseBoolean(properties.getProperty("showRequestInLog")) &&
         weatherLocation != null && weatherLocation.getLocationName() != null &&
         weatherDate != null && weatherDate.getMediumString() != null) {
-      System.out.println(String.format("\nRequestt for : %s %s\n",
+      System.out.println(String.format("\nRequest for : %s %s\n",
           weatherLocation.getLocationName(), weatherDate.getMediumString()));
     }
 

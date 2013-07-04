@@ -1,7 +1,7 @@
+
 """
 This script produces a weatherfile for running an offline or repeated sim
 """
-
 
 from datetime import datetime, timedelta
 import urllib
@@ -10,9 +10,10 @@ from xml.dom import minidom
 from xml.dom.minidom import Document
 
 
-DAYS = 125
-LOCATION = "rotterdam" # only available for now
-BASE_URL = "http://wolf-08.fbk.eur.nl:8080/"\
+DAYS = 794
+LOCATION = "rotterdam"
+LOCATION = "minneapolis"
+BASE_URL = "http://localhost:8080/"\
            "WeatherServer/faces/index.xhtml"\
            "?weatherDate=%s&weatherLocation=" + LOCATION
 

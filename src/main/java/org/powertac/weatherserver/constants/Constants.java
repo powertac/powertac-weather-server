@@ -22,12 +22,12 @@ public class Constants {
             + "ORDER BY origin, weatherDate LIMIT 576;";
     public static final String SELECT_ENERGY =
         "SELECT energyDate, price "
-            + "FROM %s WHERE AND location=? AND energyId=? OR energyDate=? "
+            + "FROM %s WHERE location=? AND (energyId=? OR energyDate=?) "
             + "LIMIT 24;";
     public static final String AVAILABLE_LOCATIONS =
         "SELECT location, minDate, maxDate FROM reports AS a, "
             + "(SELECT MIN(weatherDate) AS minDate, "
-            + "         MAX(weatherDate) AS maxDate "
+            + "        MAX(weatherDate) AS maxDate  "
             + " FROM   reports) AS m "
             + "WHERE m.maxDate = a.weatherDate "
             + "   OR m.minDate = a.weatherDate "
