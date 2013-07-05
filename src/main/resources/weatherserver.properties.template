@@ -29,3 +29,6 @@ forecastTable = forecasts
 energyTable = energy
 
 showRequestInLog = false
+
+useFlatFiles = false
+flatFileLocation = /tmp/

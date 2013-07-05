@@ -20,6 +20,9 @@ import javax.xml.transform.TransformerException;
 import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
+import java.io.BufferedReader;
+import java.io.FileReader;
+import java.io.IOException;
 import java.io.StringWriter;
 import java.util.ArrayList;
 import java.util.List;
@@ -65,6 +68,50 @@ public class Parser
           weatherLocation.getLocationName(), weatherDate.getMediumString()));
     }
 
+    if (properties.getProperty("useFlatFiles").equals("true")) {
+      String flatFile = parseFile(weatherDate, weatherLocation);
+      if (flatFile != null) {
+        return flatFile;
+      }
+    }
+
+    return queryDB (responseType, weatherDate, weatherLocation);
+	}
+
+  private static String parseFile (WeatherDate weatherDate, Location location)
+  {
+    StringBuilder sb = null;
+    BufferedReader br = null;
+    try {
+      String sCurrentLine;
+      sb = new StringBuilder();
+      br = new BufferedReader(
+          new FileReader(properties.getProperty("flatFileLocation")
+              + weatherDate.getSmallString() + "."
+              + location.getLocationName() + ".xml"));
+
+      while ((sCurrentLine = br.readLine()) != null) {
+        sb.append(sCurrentLine);
+      }
+    } catch (IOException ignored) {
+      sb = null;
+    } finally {
+      try {
+        if (br != null) {
+          br.close();
+        }
+      } catch (IOException ignored) {}
+    }
+
+    if (sb != null) {
+      return sb.toString();
+    }
+    return null;
+  }
+
+  private static String queryDB (String responseType, WeatherDate weatherDate,
+                                 Location weatherLocation)
+  {
     List<Weather> reports = new ArrayList<Weather>();
     List<Forecast> forecasts = new ArrayList<Forecast>();
     List<Energy> energys = new ArrayList<Energy>();
@@ -105,7 +152,7 @@ public class Parser
     }
 
     return createXML(reports, forecasts, energys);
-	}
+  }
 
   private static String createXML (List<Weather> reports,
                                    List<Forecast> forecasts,
