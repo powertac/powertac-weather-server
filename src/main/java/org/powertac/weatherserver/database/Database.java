@@ -177,13 +177,13 @@ public class Database {
       double tau0Speed = Double.parseDouble(properties.getProperty("tau0"));
       double tau0Cloud = Double.parseDouble(properties.getProperty("tau0"));
 
-      for (int j = 0; j < 24; j++) {
+      for (int j = 1; j <= 24; j++) {
         tau0Temp  = tau0Temp  * ((1.0/sigma - sigma) * Math.random() + sigma);
         tau0Dir   = tau0Dir   * ((1.0/sigma - sigma) * Math.random() + sigma);
         tau0Speed = tau0Speed * ((1.0/sigma - sigma) * Math.random() + sigma);
         tau0Cloud = tau0Cloud * ((1.0/sigma - sigma) * Math.random() + sigma);
 
-        Weather weather = avgWeather[i + j + 1];
+        Weather weather = avgWeather[i + j];
 
         Forecast tmpForecast = new Forecast();
         tmpForecast.setId(j);
@@ -227,7 +227,7 @@ public class Database {
       long diff = (date.getTime() - origin.getTime()) / (3600 * 1000);
 
       Forecast tmpForecast = new Forecast();
-      tmpForecast.setId((int) diff - 1);
+      tmpForecast.setId((int) diff);
       tmpForecast.setLocation(location.getLocationName());
       tmpForecast.setWeatherDate(date.getMediumString());
       tmpForecast.setOrigin(origin.getMediumString());
