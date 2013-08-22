@@ -15,6 +15,12 @@ public class Properties
     return properties.getProperty(key);
   }
 
+  public String getProperty (String key, String defaultValue)
+  {
+    loadIfNecessary();
+    return properties.getProperty(key, defaultValue);
+  }
+
   // lazy loader
   private void loadIfNecessary ()
   {

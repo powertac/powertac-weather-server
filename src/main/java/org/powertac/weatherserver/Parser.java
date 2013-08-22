@@ -68,7 +68,7 @@ public class Parser
           weatherLocation.getLocationName(), weatherDate.getMediumString()));
     }
 
-    if (properties.getProperty("useFlatFiles").equals("true")) {
+    if (properties.getProperty("useFlatFiles", "").equals("true")) {
       String flatFile = parseFile(weatherDate, weatherLocation);
       if (flatFile != null) {
         return flatFile;
