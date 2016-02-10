@@ -12,11 +12,11 @@ import java.util.List;
 @RequestScoped
 public class ActionIndex
 {
-  public ActionIndex()
+  public ActionIndex ()
   {
   }
 
-  public List<String> getLocationList()
+  public List<String> getLocationList ()
   {
     List<Location> locations = new ArrayList<Location>();
     try {
@@ -32,7 +32,7 @@ public class ActionIndex
       return result;
     }
 
-    for (Location location: locations) {
+    for (Location location : locations) {
       result.add(String.format("%s : %s - %s",
           location.getLocationName(),
           location.getMinDate(), location.getMaxDate()));

@@ -6,6 +6,7 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.TimeZone;
 
+
 public class WeatherDate
 {
   private Calendar date = Calendar.getInstance(TimeZone.getTimeZone("UTC"));

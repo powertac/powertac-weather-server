@@ -1,6 +1,7 @@
 package org.powertac.weatherserver.constants;
 
-public class Constants {
+public class Constants
+{
   public class Rest
   {
     // Possible Rest Parameters
