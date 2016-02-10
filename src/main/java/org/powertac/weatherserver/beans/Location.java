@@ -46,9 +46,6 @@ public class Location
       catch (Exception e) {
         e.printStackTrace();
       }
-      finally {
-        db.close();
-      }
     }
 
     return availableLocations;
