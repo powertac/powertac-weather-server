@@ -64,7 +64,7 @@ public class Parser
     if (Boolean.parseBoolean(properties.getProperty("showRequestInLog")) &&
         weatherLocation != null && weatherLocation.getLocationName() != null &&
         weatherDate != null && weatherDate.getMediumString() != null) {
-      System.out.println(String.format("\nRequest for : %s %s\n",
+      System.out.println(String.format("\nRequest for : %s %s",
           weatherLocation.getLocationName(), weatherDate.getMediumString()));
     }
 
@@ -84,11 +84,11 @@ public class Parser
     BufferedReader br = null;
     try {
       String sCurrentLine;
+      String fileName = String.format("%s%s.%s.xml",
+          properties.getProperty("flatFileLocation"),
+          weatherDate.getSmallString(), location.getLocationName());
       sb = new StringBuilder();
-      br = new BufferedReader(
-          new FileReader(properties.getProperty("flatFileLocation")
-              + weatherDate.getSmallString() + "."
-              + location.getLocationName() + ".xml"));
+      br = new BufferedReader(new FileReader(fileName));
 
       while ((sCurrentLine = br.readLine()) != null) {
         sb.append(sCurrentLine);
@@ -145,10 +145,8 @@ public class Parser
       }
     }
     catch (Exception e) {
-      return "Query Failure";
-    }
-    finally {
-      db.close();
+      return e.getMessage();
+      //return "Query Failure";
     }
 
     return createXML(reports, forecasts, energys);
