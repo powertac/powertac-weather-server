@@ -39,7 +39,6 @@
 		<param-value>.xhtml</param-value>
 	</context-param>
 
-
 	<context-param>
 		<param-name>org.apache.myfaces.PRETTY_HTML</param-name>
 		<param-value>true</param-value>
@@ -60,34 +59,6 @@
   <listener>
     <listener-class>org.powertac.weatherserver.listeners.Initializer</listener-class>
   </listener>
-
-	<filter>
-		<filter-name>ExtensionsFilter</filter-name>
-		<filter-class>org.apache.myfaces.webapp.filter.ExtensionsFilter</filter-class>
-		<init-param>
-			<description>
-            Set the size limit for uploaded files.
-                Format: 10  - 10 bytes
-                        10k - 10 KB
-                        10m - 10 MB
-                        1g  - 1 GB
-        </description>
-			<param-name>uploadMaxFileSize</param-name>
-			<param-value>100k</param-value>
-		</init-param>
-
-		<init-param>
-			<description>
-            Set the path where the intermediary files will be stored.
-        </description>
-			<param-name>uploadRepositoryPath</param-name>
-			<param-value>/temp</param-value>
-		</init-param>
-	</filter>
-	<filter-mapping>
-		<filter-name>ExtensionsFilter</filter-name>
-		<servlet-name>Faces Servlet</servlet-name>
-	</filter-mapping>
 
 	<servlet>
 		<servlet-name>Faces Servlet</servlet-name>

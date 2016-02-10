@@ -2,7 +2,7 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" 
 "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml"
-  xmlns:t="http://myfaces.apache.org/tomahawk">
+      xmlns:h="http://java.sun.com/jsf/html">
 
 <metadata xmlns="http://java.sun.com/jsf/core">
   <event type="preRenderView" listener="#{rest.respond}"/>
@@ -57,9 +57,11 @@
   <br />
   <b>Available locations : </b>
   <br />
-  <t:dataList value="#{actionIndex.getLocationList()}"
-              layout="unorderedList" var="location" >
-    <t:outputText value="#{location}" />
-  </t:dataList>
+  <br />
+  <h:dataTable value="#{actionIndex.getLocationList()}" var="location">
+    <h:column>
+      <h:outputText value="#{location}"/>
+    </h:column>
+  </h:dataTable>
 </body>
 </html>
