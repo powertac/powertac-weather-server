@@ -11,8 +11,8 @@ The Power TAC Weather Server is a dynamic jsf web application for serving weathe
 * Import the data into the database (this needs python > 2.6)
 
   Get and unzip the weather data files from :
-  - http://knmi.nl/klimatologie/uurgegevens/datafiles/344/uurgeg_344_2001-2010.zip
-  - http://knmi.nl/klimatologie/uurgegevens/datafiles/344/uurgeg_344_2011-2020.zip
+  - http://cdn.knmi.nl/knmi/map/page/klimatologie/gegevens/uurgegevens/uurgeg_344_2001-2010.zip
+  - http://cdn.knmi.nl/knmi/map/page/klimatologie/gegevens/uurgegevens/uurgeg_344_2011-2020.zip
 
   Run import_knmi_data.py :
 
