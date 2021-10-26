@@ -1,4 +1,4 @@
- PowerTAC Weather Server
+# PowerTAC Weather Server
 
 ## Requirements
 
