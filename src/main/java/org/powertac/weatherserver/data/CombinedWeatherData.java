@@ -1,4 +1,4 @@
-package org.powertac.weatherserver.rest;
+package org.powertac.weatherserver.data;
 
 import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlElementWrapper;
 import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlProperty;

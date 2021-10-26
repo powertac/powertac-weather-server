@@ -1,4 +1,4 @@
-package org.powertac.weatherserver.rest;
+package org.powertac.weatherserver.data;
 
 import org.powertac.weatherserver.forecast.WeatherForecast;
 import org.powertac.weatherserver.forecast.WeatherForecastRepository;

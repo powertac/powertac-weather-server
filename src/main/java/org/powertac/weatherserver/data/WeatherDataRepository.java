@@ -1,4 +1,4 @@
-package org.powertac.weatherserver.rest;
+package org.powertac.weatherserver.data;
 
 import java.time.Instant;
 
