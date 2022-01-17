@@ -6,7 +6,6 @@ import lombok.Getter;
 import lombok.Setter;
 
 import javax.persistence.*;
-import java.time.Instant;
 
 @Entity
 @Table(name = "forecasts")
@@ -16,7 +15,7 @@ public class WeatherForecast {
     @Id
     @Getter
     @Setter
-    @Column(name = "weatherdate")
+    @Column(name = "weatherdate", columnDefinition = "datetime NOT NULL")
     @JacksonXmlProperty(localName = "date", isAttribute = true)
     private String weatherDate;
 
@@ -24,12 +23,14 @@ public class WeatherForecast {
     @Getter
     @Setter
     @JacksonXmlProperty(isAttribute = true)
+    @Column(columnDefinition = "datetime NOT NULL")
     private String origin;
 
     @Id
     @Getter
     @Setter
     @JacksonXmlProperty(localName = "location", isAttribute = true)
+    @Column(length = 128)
     private String location;
 
     @Getter

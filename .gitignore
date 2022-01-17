@@ -4,4 +4,4 @@ target/
 *.iml
 *.ipr
 
-application.properties
+/application.properties

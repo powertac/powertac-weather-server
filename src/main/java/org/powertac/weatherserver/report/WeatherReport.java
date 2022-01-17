@@ -14,7 +14,7 @@ public class WeatherReport {
     @Id
     @Getter
     @Setter
-    @Column(name = "weatherdate")
+    @Column(name = "weatherdate", columnDefinition = "datetime NOT NULL")
     @JacksonXmlProperty(localName = "date", isAttribute = true)
     private String weatherDate;
 
@@ -22,6 +22,7 @@ public class WeatherReport {
     @Getter
     @Setter
     @JacksonXmlProperty(isAttribute = true)
+    @Column(length = 128)
     private String location;
 
     @Getter
