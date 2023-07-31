@@ -18,6 +18,13 @@ spring.datasource.url=jdbc:mysql://localhost:3306/database
 server.port=8080
 ```
 
+To import weather data on startup from an existing SQL file you can add the following parameter:
+
+```properties
+data.seed.file=/path/to/weather-data.sql
+```
+
+Seed files with the same contents (compared via hash) will only be imported once to the database.
 
 ## Running
 
