@@ -1,7 +1,9 @@
 package org.powertac.weatherserver;
 
+import org.apache.logging.log4j.LogManager;
 import org.powertac.weatherserver.data.DataSeeder;
 import org.springframework.beans.BeansException;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.ApplicationArguments;
 import org.springframework.boot.ApplicationRunner;
 import org.springframework.boot.Banner;
@@ -14,6 +16,9 @@ import org.springframework.context.ApplicationContextAware;
 public class WeatherServerApplication implements ApplicationRunner, ApplicationContextAware {
 
 	private ApplicationContext context;
+
+	@Value("${spring.datasource.url}")
+	String datasource;
 
 	public static void main(String[] args) {
 		SpringApplication app = new SpringApplication(WeatherServerApplication.class);
@@ -29,6 +34,7 @@ public class WeatherServerApplication implements ApplicationRunner, ApplicationC
 
 	@Override
 	public void run(ApplicationArguments args) {
+		LogManager.getLogger().info("Datasource: " + datasource);
 		DataSeeder seeder = context.getBean(DataSeeder.class);
 		seeder.seed();
 	}
