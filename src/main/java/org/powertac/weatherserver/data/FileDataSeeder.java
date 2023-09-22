@@ -9,7 +9,6 @@ import org.springframework.jdbc.datasource.init.ScriptUtils;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
-import javax.persistence.EntityManager;
 import javax.xml.bind.DatatypeConverter;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
@@ -30,13 +29,12 @@ public class FileDataSeeder implements DataSeeder {
 
     private final SeedStatusRepository seedStatusRepository;
     private final JdbcTemplate jdbc;
-    private final EntityManager entityManager;
+
     private final Logger logger;
 
-    public FileDataSeeder(SeedStatusRepository seedStatusRepository, JdbcTemplate jdbc, EntityManager entityManager) {
+    public FileDataSeeder(SeedStatusRepository seedStatusRepository, JdbcTemplate jdbc) {
         this.seedStatusRepository = seedStatusRepository;
         this.jdbc = jdbc;
-        this.entityManager = entityManager;
         this.logger = LogManager.getLogger(FileDataSeeder.class);
     }
 
@@ -57,9 +55,8 @@ public class FileDataSeeder implements DataSeeder {
                 return;
             }
             persistSeed(seed);
-            seedStatusRepository.save(new SeedStatus(hash, Instant.now()));
-            entityManager.clear();
-            logger.info(String.format("imported data seed %s", seedFile));
+            SeedStatus status = seedStatusRepository.save(new SeedStatus(hash, Instant.now()));
+            logger.info(String.format("imported data seed %s [id=%s]", seedFile, status.getMd5()));
         } catch (IOException e) {
             logger.error(String.format("failed to import seed file %s", seedFile), e);
         } catch (NoSuchAlgorithmException e) {

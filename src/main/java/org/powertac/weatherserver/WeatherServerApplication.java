@@ -12,6 +12,8 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
 
+import javax.persistence.EntityManager;
+
 @SpringBootApplication
 public class WeatherServerApplication implements ApplicationRunner, ApplicationContextAware {
 
@@ -35,8 +37,8 @@ public class WeatherServerApplication implements ApplicationRunner, ApplicationC
 	@Override
 	public void run(ApplicationArguments args) {
 		LogManager.getLogger().info("Datasource: " + datasource);
-		DataSeeder seeder = context.getBean(DataSeeder.class);
-		seeder.seed();
+		context.getBean(DataSeeder.class).seed();
+		context.getBean(EntityManager.class).clear();
 	}
 
 }
