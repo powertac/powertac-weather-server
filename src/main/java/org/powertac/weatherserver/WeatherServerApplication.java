@@ -36,7 +36,6 @@ public class WeatherServerApplication implements ApplicationRunner, ApplicationC
 
 	@Override
 	public void run(ApplicationArguments args) {
-		LogManager.getLogger().info("Datasource: " + datasource);
 		context.getBean(DataSeeder.class).seed();
 		context.getBean(EntityManager.class).clear();
 	}
