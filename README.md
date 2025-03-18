@@ -2,8 +2,8 @@
 
 ## Requirements
 
-- Java 11
-- Maven 3.6
+- Java 21
+- Maven 3
 - Access to a MySQL/MariaDB database containing forecasts as well as weather reports compliant with the existing schema.
 
 
@@ -15,7 +15,7 @@ Create a configuration file(`application.properties`) in the project root with t
 spring.datasource.username=username
 spring.datasource.password=password
 spring.datasource.url=jdbc:mysql://localhost:3306/database
-server.port=8080
+server.port=8020
 ```
 
 To import weather data on startup from an existing SQL file you can add the following parameter:
