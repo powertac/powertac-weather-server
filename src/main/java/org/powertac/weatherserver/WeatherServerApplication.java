@@ -1,6 +1,6 @@
 package org.powertac.weatherserver;
 
-import org.apache.logging.log4j.LogManager;
+import jakarta.persistence.EntityManager;
 import org.powertac.weatherserver.data.DataSeeder;
 import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.annotation.Value;
@@ -11,8 +11,6 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
-
-import javax.persistence.EntityManager;
 
 @SpringBootApplication
 public class WeatherServerApplication implements ApplicationRunner, ApplicationContextAware {

@@ -1,15 +1,14 @@
 package org.powertac.weatherserver.data;
 
+import jakarta.xml.bind.DatatypeConverter;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.dao.DataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
-import org.springframework.jdbc.datasource.init.ScriptUtils;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
-import javax.xml.bind.DatatypeConverter;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
@@ -18,7 +17,7 @@ import java.nio.file.Paths;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.time.Instant;
-import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 @Component
@@ -57,6 +56,7 @@ public class FileDataSeeder implements DataSeeder {
             persistSeed(seed);
             SeedStatus status = seedStatusRepository.save(new SeedStatus(hash, Instant.now()));
             logger.info(String.format("imported data seed %s [id=%s]", seedFile, status.getMd5()));
+            // todo - rollback on error
         } catch (IOException e) {
             logger.error(String.format("failed to import seed file %s", seedFile), e);
         } catch (NoSuchAlgorithmException e) {
@@ -75,9 +75,12 @@ public class FileDataSeeder implements DataSeeder {
     }
 
     private void persistSeed(String seed) {
-        List<String> statements = parseStatements(seed);
+        List<String> statements = Arrays.stream(seed.split(";"))
+            .map(s -> s.replace("\n", "").replace("\r", ""))
+            .filter(s -> !s.trim().isEmpty())
+            .toList();
         int i = 0;
-        for (String statement : statements) {
+        for (String statement :  statements) {
             i++;
             if (i % 10 == 0) {
                 double progress = (double) i / (double) statements.size();
@@ -85,12 +88,6 @@ public class FileDataSeeder implements DataSeeder {
             }
             jdbc.execute(statement);
         }
-    }
-
-    private List<String> parseStatements(String batch) {
-        List<String> statements = new ArrayList<>();
-        ScriptUtils.splitSqlScript(batch, ';', statements);
-        return statements;
     }
 
 }
